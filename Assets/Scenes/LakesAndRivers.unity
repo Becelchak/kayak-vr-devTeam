@@ -1152,6 +1152,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2171894728802317386, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3779525992458999987, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
       propertyPath: m_LinearDamping
       value: 0.8

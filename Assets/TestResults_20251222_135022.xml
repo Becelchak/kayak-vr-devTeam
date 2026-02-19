@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Failed(Child)" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2025-12-22 08:50:10Z" end-time="2025-12-22 08:50:10Z" duration="0,0611991">
+  <test-suite type="TestSuite" id="1007" name="My project (14)" fullname="My project (14)" runstate="Runnable" testcasecount="1" result="Failed" site="Child" start-time="2025-12-22 08:50:10Z" end-time="2025-12-22 08:50:10Z" duration="0.061199" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1003" name="Tests.dll" fullname="C:/Users/Admin/Unity/My project (14)/Library/ScriptAssemblies/Tests.dll" runstate="Runnable" testcasecount="1" result="Failed" site="Child" start-time="2025-12-22 08:50:10Z" end-time="2025-12-22 08:50:10Z" duration="0.049220" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="3816" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1001" name="AircraftTests" fullname="AircraftTests" classname="AircraftTests" runstate="Runnable" testcasecount="1" result="Failed" site="Child" start-time="2025-12-22 08:50:10Z" end-time="2025-12-22 08:50:10Z" duration="0.043343" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-case id="1002" name="TestAircraftMovement" fullname="AircraftTests.TestAircraftMovement" methodname="TestAircraftMovement" classname="AircraftTests" runstate="Runnable" seed="1893541796" result="Failed" start-time="2025-12-22 08:50:10Z" end-time="2025-12-22 08:50:10Z" duration="0.028307" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  Объект Aircraft не найден на сцене!
+  Expected: not null
+  But was:  null
+]]></message>
+            <stack-trace><![CDATA[at AircraftTests+<TestAircraftMovement>d__0.MoveNext () [0x0002a] in C:\Users\Admin\Unity\My project (14)\Assets\Tests\AircraftTests.cs:13
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@d97b7cd61ded\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+          </failure>
+          <output><![CDATA[Saving results to: C:/Users/Admin/AppData/LocalLow/DefaultCompany/My project (14)\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
