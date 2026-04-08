@@ -23,7 +23,6 @@ public class CoachCameraController : MonoBehaviour
 
     void Start()
     {
-        // Инициализация
         if (followMode)
         {
             EnterFollowMode();
@@ -37,6 +36,7 @@ public class CoachCameraController : MonoBehaviour
     void Update()
     {
         // Переключение режимов по клавише F
+        // В теории можно заменить на InputSystem, для интеграции с джойстиком
         if (Input.GetKeyDown(KeyCode.F))
         {
             ToggleMode();
@@ -66,7 +66,7 @@ public class CoachCameraController : MonoBehaviour
         Vector3 angles = transform.eulerAngles;
         yaw = angles.y;
         pitch = angles.x;
-        // Скрыть и заблокировать курсор для удобства
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -74,14 +74,14 @@ public class CoachCameraController : MonoBehaviour
     void EnterFollowMode()
     {
         freeFlyMode = false;
-        // Показать курсор
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
 
     void UpdateFreeFly()
     {
-        // Поворот мышью
+        // В теории можно заменить на InputSystem, для интеграции с джойстиком
         float mouseX = Input.GetAxis("Mouse X") * lookSpeed;
         float mouseY = Input.GetAxis("Mouse Y") * lookSpeed;
 
@@ -90,8 +90,6 @@ public class CoachCameraController : MonoBehaviour
         pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
 
         transform.rotation = Quaternion.Euler(pitch, yaw, 0f);
-
-        // Перемещение
         float speed = moveSpeed;
         if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
             speed *= fastSpeedMultiplier;
