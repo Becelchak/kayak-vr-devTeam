@@ -2947,6 +2947,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2710449129988704832, guid: 53616a54c89463649a046c603e48bc94, type: 3}
   m_PrefabInstance: {fileID: 611764913}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &623330916 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1442998892070222095, guid: bb2642ac8d4622943b4a5d0f305d82c7, type: 3}
+  m_PrefabInstance: {fileID: 632082342}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &632082342
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5612,7 +5623,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1068676952
 Transform:
   m_ObjectHideFlags: 0
@@ -8309,6 +8320,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2171894728802317386, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
   m_PrefabInstance: {fileID: 1356947986}
   m_PrefabAsset: {fileID: 0}
+--- !u!54 &1356947990 stripped
+Rigidbody:
+  m_CorrespondingSourceObject: {fileID: 3779525992458999987, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
+  m_PrefabInstance: {fileID: 1356947986}
+  m_PrefabAsset: {fileID: 0}
 --- !u!43 &1357057494
 Mesh:
   m_ObjectHideFlags: 0
@@ -8601,8 +8617,9 @@ GameObject:
   - component: {fileID: 1505515678}
   - component: {fileID: 1505515677}
   - component: {fileID: 1505515676}
+  - component: {fileID: 1505515679}
   m_Layer: 0
-  m_Name: ServiceLocator
+  m_Name: WebSocketLocator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8635,9 +8652,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WebSocketClient
   serverUrl: ws://raspbery-box:8765
-  statusText: {fileID: 0}
+  statusText: {fileID: 623330916}
   bouat: {fileID: 0}
   parser: {fileID: 1505515676}
+  _useOfflineMode: 0
 --- !u!4 &1505515678
 Transform:
   m_ObjectHideFlags: 0
@@ -8653,6 +8671,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1505515679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1505515675}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e152978d200612478f70a5f92c470ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MetricsCalculator
+  kayakBody: {fileID: 1356947990}
+  waterDrag: 50
+  powerThreshold: 5
+  minStrokeInterval: 0.3
+  minTimeCheckStreetrate: 1
+  logToConsole: 1
 --- !u!1 &1611899566
 GameObject:
   m_ObjectHideFlags: 0
