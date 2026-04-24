@@ -35,6 +35,8 @@ public class WebSocketClient : MonoBehaviour
     private float _startTime;
     private string _filePath;
     [SerializeField] private bool _useOfflineMode = false;
+    [Tooltip("Повторяет считывание одного и того же файла с логами тренажера, при невозможности подключиться к реальному тренажеру")]
+    [SerializeField] private bool offlineLoop = true;
 
     async void Start()
     {
@@ -141,9 +143,10 @@ public class WebSocketClient : MonoBehaviour
             index++;
         }
 
-        Debug.Log("Offline simulation finished. Looping from start...");
+        Debug.Log("Offline simulation finished");
         // Опционально: зациклить симуляцию
-        // StartCoroutine(SimulateDataStream(entries));
+        if(offlineLoop)
+            StartCoroutine(SimulateDataStream(entries));
     }
 
     private void ProcessReceivedData(string message)

@@ -111,7 +111,7 @@ public class DoublePaddleSystem : MonoBehaviour
 
         if (!isPaddleActive && showDebugInfo)
         {
-            Debug.Log($"Весло неактивно! Расстояние между руками: {handDistance:F2}m (мин: {minHandDistance}m, макс: {maxHandDistance}m)");
+            //Debug.Log($"Весло неактивно! Расстояние между руками: {handDistance:F2}m (мин: {minHandDistance}m, макс: {maxHandDistance}m)");
         }
     }
 

@@ -7,12 +7,16 @@ public class MetricsCalculator : MonoBehaviour
     [Header("Параметры каяка")]
     [SerializeField] private Rigidbody kayakBody;
     //[SerializeField] private float kayakMass = 100f;
-    [SerializeField] private float waterDrag = 50f;     // коэффициент сопротивления воды (F = drag * v)
+    [Tooltip("Коэффициент сопротивления воды (F = drag * v)")]
+    [SerializeField] private float waterDrag = 50f;
 
     [Header("Детекция гребков")]
-    [SerializeField] private float powerThreshold = 5f; // порог силы для начала гребка
-    [SerializeField] private float minStrokeInterval = 0.3f; // мин. интервал между гребками (сек)
-    [SerializeField] private float minTimeCheckStreetrate = 1f; //мин. время для детекции темпа (сек)
+    [Tooltip("Порог силы для начала гребка")]
+    [SerializeField] private float powerThreshold = 5f;
+    [Tooltip("Мин. интервал между гребками (сек)")]
+    [SerializeField] private float minStrokeInterval = 0.3f;
+    [Tooltip("Мин. время для детекции темпа (сек)")]
+    [SerializeField] private float minTimeCheckStreetrate = 1f;
 
     [Header("Отображение (временное)")]
     [SerializeField] private bool logToConsole = true;
@@ -33,6 +37,11 @@ public class MetricsCalculator : MonoBehaviour
     private float tempoDecayRate = 5f;
     private Queue<float> recentStrokeIntervals = new Queue<float>(); // для скользящего среднего темпа
     public event Action<float, float, float> OnMetricsUpdated;
+
+    public event Action OnStrokeStarted;
+    public event Action OnStrokeEnded;
+
+    private bool isStrokeInProgress = false;
 
     private void OnEnable()
     {
@@ -57,7 +66,7 @@ public class MetricsCalculator : MonoBehaviour
 
         if (logToConsole)
         {
-            Debug.Log($"Темп: {StrokeRate:F1} греб/мин | Длина гребка: {StrokeLength:F2} м | Скорость: {Speed:F2} м/с");
+            //Debug.Log($"Темп: {StrokeRate:F1} греб/мин | Длина гребка: {StrokeLength:F2} м | Скорость: {Speed:F2} м/с");
         }
     }
 
@@ -70,7 +79,13 @@ public class MetricsCalculator : MonoBehaviour
         {
             var now = Time.time;
 
-            if(strokeCount > 0)
+            if (!isStrokeInProgress)
+            {
+                isStrokeInProgress = true;
+                OnStrokeStarted?.Invoke();
+            }
+
+            if (strokeCount > 0)
             {
                 var interval = now - lastStrokeTime;
                 AddStrokeInterval(interval);
@@ -82,11 +97,6 @@ public class MetricsCalculator : MonoBehaviour
             strokeStartTime = now;
             strokeStartVelocity = Speed;
 
-            //Debug.Log($"{strokeCount}");
-            //UpdateStrokeRate();
-
-            // Длину гребка можно будет вычислить по окончании гребка (когда power снова упадет ниже порога)
-            // Сейчас приблизительно через приращение скорости
         }
 
         if (power < powerThreshold * 0.5f && strokeStartTime > 0 && Time.time - strokeStartTime > 0.2f)
@@ -97,7 +107,19 @@ public class MetricsCalculator : MonoBehaviour
             strokeStartTime = 0f;
         }
 
+        if(isStrokeInProgress && power < powerThreshold * 0.5f)
+        {
+            isStrokeInProgress = false;
+            OnStrokeEnded?.Invoke();
+        }
+
         OnMetricsUpdated?.Invoke(StrokeRate, StrokeLength, Speed);
+    }
+
+    public void SetStrokeLength(float length)
+    {
+        StrokeLength = length;
+        Debug.Log($"Длина гребка: {length:F2} м");
     }
 
     private void AddStrokeInterval(float interval)

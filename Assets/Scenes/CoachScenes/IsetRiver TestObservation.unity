@@ -8618,6 +8618,7 @@ GameObject:
   - component: {fileID: 1505515677}
   - component: {fileID: 1505515676}
   - component: {fileID: 1505515679}
+  - component: {fileID: 1505515680}
   m_Layer: 0
   m_Name: WebSocketLocator
   m_TagString: Untagged
@@ -8688,7 +8689,24 @@ MonoBehaviour:
   powerThreshold: 5
   minStrokeInterval: 0.3
   minTimeCheckStreetrate: 1
-  logToConsole: 1
+  logToConsole: 0
+--- !u!114 &1505515680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1505515675}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 952e3122da747d94faae5563065bcd21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StrokeLengthMeasurer
+  kayakRb: {fileID: 1356947990}
+  metrics: {fileID: 1505515679}
+  useBoatVelocity: 1
+  leftBladeTip: {fileID: 658577581}
+  rightBladeTip: {fileID: 658577580}
 --- !u!1 &1611899566
 GameObject:
   m_ObjectHideFlags: 0
