@@ -6,8 +6,11 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/IsetRiverPCVR.unity
-    guid: b40478a835e0b10409b51ff6d270a0c0
+    path: Assets/Scenes/CoachScenes/IsetRiver TestObservation.unity
+    guid: 0b4116e2b50cad945930b3e8197a7a51
+  - enabled: 1
+    path: Assets/Scenes/CoachScenes/TestSceneWithObservation.unity
+    guid: 78787e1a0dcc36a458005645d6360821
   m_configObjects:
     Unity.XR.PXR.Settings: {fileID: 11400000, guid: dbafecba57430e04385a2b7c872c8027, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

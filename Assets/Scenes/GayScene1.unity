@@ -491,6 +491,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &115202885
 MeshFilter:
@@ -854,6 +855,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &242907876
 MeshFilter:
@@ -923,14 +925,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 410087039}
   m_Enabled: 1
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 2
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 2
     m_Resolution: -1
@@ -1275,6 +1277,8 @@ MonoBehaviour:
   m_DisableVisualsWhenBlockedInGroup: 1
   m_StartingSelectedInteractable: {fileID: 0}
   m_StartingTargetFilter: {fileID: 0}
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}
   m_HoverEntered:
     m_PersistentCalls:
       m_Calls: []
@@ -2546,6 +2550,7 @@ MonoBehaviour:
   headCamera: {fileID: 1760129648}
   distance: 2
   smoothSpeed: 5
+  heightOffset: 0
 --- !u!114 &1005770184
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3403,18 +3408,27 @@ MonoBehaviour:
   leftBlade:
     bladeRoot: {fileID: 1171740719}
     bladeTip: {fileID: 45234785}
-    isLeft: 1
+    constrainedPosition: {x: 0, y: 0, z: 0}
   rightBlade:
     bladeRoot: {fileID: 1171740719}
     bladeTip: {fileID: 1892671865}
-    isLeft: 0
-  waterLevel: 0
+    constrainedPosition: {x: 0, y: 0, z: 0}
+  minHandDistance: 0.4
+  maxHandDistance: 1.5
   bladeDepthThreshold: -0.05
   maxEffectiveSpeed: 2.5
   forceMultiplier: 270
   recoveryDrag: 0.5
   minEfficiency: 0.1
   maxEfficiency: 1
+  blockingLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  bladeCollisionRadius: 0.08
+  shaftCollisionRadius: 0.03
+  shaftCheckPoints: 5
+  minSpatialLength: 1
+  showDebugInfo: 1
 --- !u!114 &1630699685
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3427,7 +3441,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29885b1e9fd86d14ab84a4ec918af5ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuoyancySystem
-  waterLevel: 0
   waterDensity: 1000
   baseVerticalDamping: 15
   baseHorizontalDamping: 3
@@ -3449,6 +3462,7 @@ MonoBehaviour:
     area: 0.1
   - localPosition: {x: 0, y: -0.05, z: 0}
     area: 0.5
+  minSpatialLength: 2
   useVRCenterOfMass: 1
   vrCamera: {fileID: 1760129648}
   horizontalInfluence: 0.2
@@ -3946,6 +3960,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &1760518309
 MonoBehaviour:
@@ -311211,6 +311226,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!4 &2437576290957779714
 Transform:
@@ -311304,6 +311320,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &4550820457743468903
 MeshFilter:
@@ -311461,6 +311478,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &8227383391583710044
 GameObject:
@@ -311565,6 +311583,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!23 &8562991604179058239
 MeshRenderer:
@@ -311613,6 +311632,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
