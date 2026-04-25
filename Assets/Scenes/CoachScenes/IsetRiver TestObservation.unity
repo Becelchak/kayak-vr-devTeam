@@ -8190,6 +8190,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Kayak
       objectReference: {fileID: 0}
+    - target: {fileID: 1544679779242766064, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 2171894728802317386, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3261.6
@@ -8250,6 +8254,18 @@ PrefabInstance:
       propertyPath: waterDensity
       value: 1000
       objectReference: {fileID: 0}
+    - target: {fileID: 4713453387523132176, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7651517852622405505, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7747086740003387484, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 8135443800744371175, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
       propertyPath: waterLevel
       value: -28.1
@@ -8309,6 +8325,14 @@ PrefabInstance:
     - target: {fileID: 8135443800744371175, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
       propertyPath: blockingLayers.m_Bits
       value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 8806140705468391806, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8912026118558035854, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8657,6 +8681,7 @@ MonoBehaviour:
   bouat: {fileID: 0}
   parser: {fileID: 1505515676}
   _useOfflineMode: 0
+  offlineLoop: 1
 --- !u!4 &1505515678
 Transform:
   m_ObjectHideFlags: 0
