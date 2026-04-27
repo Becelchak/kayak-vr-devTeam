@@ -3,17 +3,19 @@ using UnityEngine;
 public class StrokeLengthMeasurer : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private Rigidbody kayakRb;          // каяк
-    [SerializeField] private MetricsCalculator metrics;   // чтобы знать момент начала/конца гребка
+    [SerializeField] private Rigidbody kayakRb;
+    [SerializeField] private MetricsCalculator metrics;
 
     [Header("Settings")]
-    [SerializeField] private bool useBoatVelocity = true; // если false – использовать весло
-    [SerializeField] private Transform leftBladeTip;      // опционально для метода весла
+    [Tooltip("Если false – использовать весло")]
+    [SerializeField] private bool useBoatVelocity = true; 
+    [SerializeField] private Transform leftBladeTip;
     [SerializeField] private Transform rightBladeTip;
 
     private float currentStrokeLength = 0f;
     private bool isStroking = false;
     private Vector3 lastBoatPos;
+    private Vector3 lastStrokePosition;
 
     private void OnEnable()
     {
@@ -22,6 +24,11 @@ public class StrokeLengthMeasurer : MonoBehaviour
             metrics.OnStrokeStarted += StartStroke;
             metrics.OnStrokeEnded += EndStroke;
         }
+        DoublePaddleSystem.OnLeftBladeEnterWater += OnBladeEnterWater;
+        DoublePaddleSystem.OnRightBladeEnterWater += OnBladeEnterWater;
+        DoublePaddleSystem.OnLeftBladeExitWater += OnBladeExitWater;
+        DoublePaddleSystem.OnRightBladeExitWater += OnBladeExitWater;
+
     }
 
     private void StartStroke()
@@ -45,7 +52,6 @@ public class StrokeLengthMeasurer : MonoBehaviour
 
         if (useBoatVelocity && kayakRb != null)
         {
-            // Интегрируем скорость каяка за время гребка
             Vector3 currentPos = kayakRb.position;
             float delta = Vector3.Distance(currentPos, lastBoatPos);
             currentStrokeLength += delta;
@@ -55,7 +61,22 @@ public class StrokeLengthMeasurer : MonoBehaviour
         {
             // Альтернатива: измерять перемещение лопасти (например, активной в данный момент)
             // Нужно определить, какая лопасть сейчас в воде (левая или правая)
-            // Для простоты – не реализую здесь, но идея ясна.
         }
+    }
+
+    private void OnBladeEnterWater()
+    {
+        // Начало гребка (любая лопасть вошла в воду)
+        if (!isStroking)
+            StartStroke();
+        lastStrokePosition = kayakRb.position;
+    }
+
+    private void OnBladeExitWater()
+    {
+        // Окончание гребка (лопасть вышла из воды)
+        float travelled = Vector3.Distance(kayakRb.position, lastStrokePosition);
+        currentStrokeLength += travelled;
+        EndStroke();
     }
 }

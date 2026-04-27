@@ -64,6 +64,16 @@ public class DoublePaddleSystem : MonoBehaviour
 
     // Для ограничения позиции весла
     private Vector3 constrainedLeftPos, constrainedRightPos;
+    // Для детекции длины гребка
+    // События для лопастей (можно сделать статическими или instance)
+    public static event System.Action OnLeftBladeEnterWater;
+    public static event System.Action OnLeftBladeExitWater;
+    public static event System.Action OnRightBladeEnterWater;
+    public static event System.Action OnRightBladeExitWater;
+
+    // Флаги предыдущего состояния погружения
+    private bool leftBladeWasInWater = false;
+    private bool rightBladeWasInWater = false;
 
     void Awake()
     {
@@ -193,13 +203,13 @@ public class DoublePaddleSystem : MonoBehaviour
         }
 
         if (leftBlade?.bladeTip != null)
-            ProcessBlade(leftBlade, ref lastLeftTip, ref leftInWater, _leftHeightHelper, _leftFlowHelper);
+            ProcessBlade(leftBlade, ref lastLeftTip, ref leftInWater, _leftHeightHelper, _leftFlowHelper, true);
 
         if (rightBlade?.bladeTip != null)
-            ProcessBlade(rightBlade, ref lastRightTip, ref rightInWater, _rightHeightHelper, _rightFlowHelper);
+            ProcessBlade(rightBlade, ref lastRightTip, ref rightInWater, _rightHeightHelper, _rightFlowHelper, false);
     }
 
-    void ProcessBlade(Blade blade, ref Vector3 lastPos, ref bool inWater, SampleHeightHelper heightHelper, SampleFlowHelper flowHelper)
+    void ProcessBlade(Blade blade, ref Vector3 lastPos, ref bool inWater, SampleHeightHelper heightHelper, SampleFlowHelper flowHelper, bool isLeftBlade)
     {
         Transform tip = blade.bladeTip;
         Vector3 current = tip.position;
@@ -225,6 +235,33 @@ public class DoublePaddleSystem : MonoBehaviour
 
         bool currentlyInWater = current.y < waterHeight + bladeDepthThreshold;
         inWater = currentlyInWater;
+
+        if (isLeftBlade)
+        {
+            if (currentlyInWater && !leftBladeWasInWater)
+            {
+                OnLeftBladeEnterWater?.Invoke();
+                leftBladeWasInWater = true;
+            }
+            else if (!currentlyInWater && leftBladeWasInWater)
+            {
+                OnLeftBladeExitWater?.Invoke();
+                leftBladeWasInWater = false;
+            }
+        }
+        else
+        {
+            if (currentlyInWater && !rightBladeWasInWater)
+            {
+                OnRightBladeEnterWater?.Invoke();
+                rightBladeWasInWater = true;
+            }
+            else if (!currentlyInWater && rightBladeWasInWater)
+            {
+                OnRightBladeExitWater?.Invoke();
+                rightBladeWasInWater = false;
+            }
+        }
 
         if (currentlyInWater)
         {

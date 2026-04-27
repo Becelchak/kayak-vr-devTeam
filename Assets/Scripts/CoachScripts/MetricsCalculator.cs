@@ -6,13 +6,14 @@ public class MetricsCalculator : MonoBehaviour
 {
     [Header("Параметры каяка")]
     [SerializeField] private Rigidbody kayakBody;
-    //[SerializeField] private float kayakMass = 100f;
     [Tooltip("Коэффициент сопротивления воды (F = drag * v)")]
     [SerializeField] private float waterDrag = 50f;
 
     [Header("Детекция гребков")]
     [Tooltip("Порог силы для начала гребка")]
     [SerializeField] private float powerThreshold = 5f;
+    [Tooltip("Коэффицент, показывающий выход из гребка и падения силы. Чем больше коэффицент, тем более чувстиветельна панель данных к падению силы.")]
+    [SerializeField] private float powerOffCoeficent = 0.5f;
     [Tooltip("Мин. интервал между гребками (сек)")]
     [SerializeField] private float minStrokeInterval = 0.3f;
     [Tooltip("Мин. время для детекции темпа (сек)")]
@@ -99,16 +100,15 @@ public class MetricsCalculator : MonoBehaviour
 
         }
 
-        if (power < powerThreshold * 0.5f && strokeStartTime > 0 && Time.time - strokeStartTime > 0.2f)
+        if(isStrokeInProgress && power < powerThreshold * powerOffCoeficent)
         {
-            float strokeDuration = Time.time - strokeStartTime;
-            float deltaV = Speed - strokeStartVelocity;
-            StrokeLength = (strokeStartVelocity + Speed) / 2f * strokeDuration;
-            strokeStartTime = 0f;
-        }
-
-        if(isStrokeInProgress && power < powerThreshold * 0.5f)
-        {
+            if(strokeStartTime > 0 && Time.time - strokeStartTime > 0.2f)
+            {
+                float strokeDuration = Time.time - strokeStartTime;
+                float deltaV = Speed - strokeStartVelocity;
+                //StrokeLength = (strokeStartVelocity + Speed) / 2f * strokeDuration;
+                strokeStartTime = 0f;
+            }
             isStrokeInProgress = false;
             OnStrokeEnded?.Invoke();
         }
@@ -142,29 +142,6 @@ public class MetricsCalculator : MonoBehaviour
         StrokeRate = 0f;
         lastStrokeTime = -100f;
     }
-
-    //private void UpdateStrokeRate()
-    //{
-    //    // Добавляем интервал с последним гребком
-    //    if (strokeCount > 1)
-    //    {
-    //        float lastInterval = Time.time - lastStrokeTime;
-    //        recentStrokeIntervals.Enqueue(lastInterval);
-    //        // Храним интервалы за последние 10 секунд (или 10 гребков)
-    //        while (recentStrokeIntervals.Count > 10)
-    //            recentStrokeIntervals.Dequeue();
-
-    //        float sum = 0f;
-    //        foreach (var interval in recentStrokeIntervals)
-    //            sum += interval;
-    //        float avgInterval = sum / recentStrokeIntervals.Count;
-    //        StrokeRate = 60f / avgInterval;
-    //    }
-    //    else
-    //    {
-    //        StrokeRate = 0f;
-    //    }
-    //}
 
     private float EstimateSpeedFromPower()
     {

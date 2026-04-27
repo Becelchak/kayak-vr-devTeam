@@ -78,6 +78,7 @@ public class WebSocketClient : MonoBehaviour
         }
         catch (Exception e)
         {
+            Debug.Log($"Connection failed");
             Debug.LogWarning($"Connection error: {e.Message}");
             return false;
         }
