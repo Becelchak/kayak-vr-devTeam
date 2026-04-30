@@ -7,10 +7,9 @@ public class BuoyancyController : MonoBehaviour
     [Header("Physics settings")]
     
     [SerializeField] public Rigidbody _rb;
-    [SerializeField] public GameObject left_point;
-    [SerializeField] public GameObject right_point;
+    [SerializeField] public GameObject force_point;
     [SerializeField] private float mass;
-    [SerializeField] private float WaterLevel = 0f;
+    [SerializeField] private WaterLevelController WaterLevel;
 
     [Header("hand settings")]
     [SerializeField] public GameObject left;
@@ -26,17 +25,14 @@ public class BuoyancyController : MonoBehaviour
 
     public void SetPower(float power, float d_power)
     {
-        if(d_power > 0.0f)
-            actual_pos = left.transform.position.y < right.transform.position.y ? right_point: left_point;
-
         _power = power;
-        _d_power = d_power;
+        _d_power = d_power;         
     }
 
     void Awake()
     {
         mass = _rb.mass;
-        actual_pos = left.transform.position.y < right.transform.position.y ? right_point: left_point;
+        //actual_pos = left.transform.position.y < right.transform.position.y ? right_point: left_point;
 
         _buoyancyPoints = GetComponentsInChildren<BuoyancyPoint>();
         foreach (var point in _buoyancyPoints)
@@ -44,18 +40,21 @@ public class BuoyancyController : MonoBehaviour
             point.AddToBoard();
         }
         _buoyancyPointCount = _buoyancyPoints.Length;
-        WebSocketClient.OnPowerChanged += SetPower;
+        WebSocketClient.OnNewPower += SetPower;
     }
 
     void FixedUpdate()
     {
-        _rb.AddForceAtPosition(_rb.transform.forward * _power/10f, actual_pos.transform.position, ForceMode.Force);
+        if(_power > 0.0f)
+            _rb.AddForceAtPosition(_rb.transform.forward * _power/2, force_point.transform.position, ForceMode.Force);
 
         foreach (var point in _buoyancyPoints)
         {
-            if (point.transform.position.y < WaterLevel)
+            if (WaterLevel.IsUnderWater(point.gameObject))
             {
-                var buoyancyForce = mass * Math.Abs(Physics.gravity.y) / _buoyancyPointCount *(1+WaterLevel - point.transform.position.y);
+                var buoyancyForce = mass * Math.Abs(Physics.gravity.y) / 
+                _buoyancyPointCount * (1 + WaterLevel.GetWaterLevel(point.gameObject) - point.transform.position.y);
+
                 _rb.AddForceAtPosition(Vector3.up * buoyancyForce, point.transform.position);
             }
         }
@@ -63,6 +62,6 @@ public class BuoyancyController : MonoBehaviour
 
     void OnDestroy()
     {
-        WebSocketClient.OnPowerChanged -= SetPower;
+        WebSocketClient.OnNewPower -= SetPower;
     }
 }
