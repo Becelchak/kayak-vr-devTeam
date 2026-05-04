@@ -25,9 +25,12 @@ public class WebSocketClient : MonoBehaviour
     [SerializeField] private WebParserBase parser;
 
     public static Action<float, float> OnPowerChanged;
+     public static Action<float, float> OnNewPower;
 
     private float _power = 0f;
     private float _d_power;
+    private float pass_power = 0f;
+    private float pass_d_power;
 
     private ClientWebSocket _webSocket = null;
     private CancellationTokenSource _cts;
@@ -208,10 +211,15 @@ public class WebSocketClient : MonoBehaviour
                     float elapsedTime = Time.time - _startTime;
                     string line = $"{_power},{_d_power},{elapsedTime}\n";
 
-                    OnPowerChanged?.Invoke(_power, _d_power);
+                    OnNewPower?.Invoke(_power, _d_power);
+                    if (pass_power != _power || pass_d_power != _d_power)
+                        OnPowerChanged?.Invoke(_power, _d_power);
+
+                    pass_power = _power;
+                    pass_d_power = _d_power;
 
                     File.AppendAllText(_filePath, line);
-                    statusText.text = $"{message}\nPower: {_power}\nDPower: {_d_power}";
+                    //statusText.text = $"{message}\nPower: {_power}\nDPower: {_d_power}";
                 }
             }
             catch (Exception e)

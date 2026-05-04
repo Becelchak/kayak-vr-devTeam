@@ -4,30 +4,30 @@ using System;
 
 public class MetricsCalculator : MonoBehaviour
 {
-    [Header("Параметры каяка")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ")]
     [SerializeField] private Rigidbody kayakBody;
-    [Tooltip("Коэффициент сопротивления воды (F = drag * v)")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ (F = drag * v)")]
     [SerializeField] private float waterDrag = 50f;
 
-    [Header("Детекция гребков")]
-    [Tooltip("Порог силы для начала гребка")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ")]
     [SerializeField] private float powerThreshold = 5f;
-    [Tooltip("Коэффицент, показывающий выход из гребка и падения силы. Чем больше коэффицент, тем более чувстиветельна панель данных к падению силы.")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ. пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ.")]
     [SerializeField] private float powerOffCoeficent = 0.5f;
-    [Tooltip("Мин. интервал между гребками (сек)")]
+    [Tooltip("пїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅ)")]
     [SerializeField] private float minStrokeInterval = 0.3f;
-    [Tooltip("Мин. время для детекции темпа (сек)")]
+    [Tooltip("пїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅ)")]
     [SerializeField] private float minTimeCheckStreetrate = 1f;
 
-    [Header("Отображение (временное)")]
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ)")]
     [SerializeField] private bool logToConsole = true;
 
-    // Текущие метрики
-    public float StrokeRate { get; private set; }    // темп (гребков/мин)
-    public float StrokeLength { get; private set; }  // длина гребка (м)
-    public float Speed { get; private set; }         // скорость (м/с)
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    public float StrokeRate { get; private set; }    // пїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅ/пїЅпїЅпїЅ)
+    public float StrokeLength { get; private set; }  // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅ)
+    public float Speed { get; private set; }         // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅ/пїЅ)
 
-    // Приватные поля для алгоритмов
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     private float lastStrokeTime = -100f;
     private float lastStrokeRealTime = -100f;
     private int strokeCount = 0;
@@ -36,7 +36,7 @@ public class MetricsCalculator : MonoBehaviour
     private float currentPower = 0f;
     private float currentDPower = 0f;
     private float tempoDecayRate = 5f;
-    private Queue<float> recentStrokeIntervals = new Queue<float>(); // для скользящего среднего темпа
+    private Queue<float> recentStrokeIntervals = new Queue<float>(); // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     public event Action<float, float, float> OnMetricsUpdated;
 
     public event Action OnStrokeStarted;
@@ -67,7 +67,7 @@ public class MetricsCalculator : MonoBehaviour
 
         if (logToConsole)
         {
-            //Debug.Log($"Темп: {StrokeRate:F1} греб/мин | Длина гребка: {StrokeLength:F2} м | Скорость: {Speed:F2} м/с");
+            //Debug.Log($"пїЅпїЅпїЅпїЅ: {StrokeRate:F1} пїЅпїЅпїЅпїЅ/пїЅпїЅпїЅ | пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ: {StrokeLength:F2} пїЅ | пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: {Speed:F2} пїЅ/пїЅ");
         }
     }
 
@@ -119,7 +119,7 @@ public class MetricsCalculator : MonoBehaviour
     public void SetStrokeLength(float length)
     {
         StrokeLength = length;
-        Debug.Log($"Длина гребка: {length:F2} м");
+        // Debug.Log($"пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ: {length:F2} пїЅ");
     }
 
     private void AddStrokeInterval(float interval)
@@ -145,8 +145,8 @@ public class MetricsCalculator : MonoBehaviour
 
     private float EstimateSpeedFromPower()
     {
-        // Грубая оценка: F = power / velocity? Нет, power = F * v.
-        // Если известна сила тяги от гребка: F = power / v (зациклено). Упростим: v = sqrt(power / drag)
+        // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ: F = power / velocity? пїЅпїЅпїЅ, power = F * v.
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ: F = power / v (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ). пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: v = sqrt(power / drag)
         if (currentPower <= 0) return 0;
         return Mathf.Sqrt(currentPower / waterDrag);
     }
