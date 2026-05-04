@@ -24,27 +24,33 @@ public class DoublePaddleSystem : MonoBehaviour
     public Blade rightBlade;
 
     [Header("Hand Constraints")]
-    [Tooltip("����������� ���������� ����� ������ ��� ��������� �����")]
+    [Tooltip("Минимальное расстояние между руками для активации весла")]
     public float minHandDistance = 0.4f;
-    [Tooltip("������������ ���������� ���������� ����� ������")]
+    [Tooltip("Максимальное допустимое расстояние между руками")]
     public float maxHandDistance = 1.5f;
 
     [Header("Physics")]
+    [Tooltip("Глубина погружения лопасти для засчитывания нахождения в воде (отрицательное значение – выше уровня воды)")]
     public float bladeDepthThreshold = -0.05f;
+    [Tooltip("Максимальная эффективная скорость гребка")]
     public float maxEffectiveSpeed = 2.5f;
+    [Tooltip("Множитель силы, прикладываемой к каяку")]
     public float forceMultiplier = 60f;
+    [Tooltip("Сопротивление воздуха при движении весла над водой")]
     public float recoveryDrag = 0.5f;
+    [Tooltip("Минимальная эффективность гребка (при неблагоприятном угле)")]
     public float minEfficiency = 0.1f;
+    [Tooltip("Максимальная эффективность гребка (при оптимальном угле)")]
     public float maxEfficiency = 1.0f;
 
     [Header("Collision Prevention")]
-    [Tooltip("���� � �������� ����� �� ������ ��������� (���� � �.�.)")]
+    [Tooltip("Слои, сквозь которые весло не должно проходить (каяк, препятствия и т.п.)")]
     public LayerMask blockingLayers;
-    [Tooltip("������ �������� ������������ ��� ��������")]
+    [Tooltip("Радиус проверки столкновений для лопастей")]
     public float bladeCollisionRadius = 0.08f;
-    [Tooltip("������ �������� ������������ ��� ������� �����")]
+    [Tooltip("Радиус проверки столкновений для стержня весла")]
     public float shaftCollisionRadius = 0.03f;
-    [Tooltip("���������� ����� �������� �� ������� �����")]
+    [Tooltip("Количество точек проверки на стержне весла")]
     public int shaftCheckPoints = 5;
 
     [Header("Crest Sampling")]
@@ -62,16 +68,12 @@ public class DoublePaddleSystem : MonoBehaviour
     private SampleFlowHelper _leftFlowHelper, _rightFlowHelper;
     private bool _initialized = false;
 
-    // ��� ����������� ������� �����
     private Vector3 constrainedLeftPos, constrainedRightPos;
-    // ��� �������� ����� ������
-    // ������� ��� �������� (����� ������� ������������ ��� instance)
     public static event System.Action OnLeftBladeEnterWater;
     public static event System.Action OnLeftBladeExitWater;
     public static event System.Action OnRightBladeEnterWater;
     public static event System.Action OnRightBladeExitWater;
 
-    // ����� ����������� ��������� ����������
     private bool leftBladeWasInWater = false;
     private bool rightBladeWasInWater = false;
 
@@ -89,30 +91,24 @@ public class DoublePaddleSystem : MonoBehaviour
     {
         if (leftController == null || rightController == null || doublePaddle == null) return;
 
-        // ��������� ������������ � ������������ �������
         constrainedLeftPos = GetConstrainedPosition(leftController.position, constrainedLeftPos);
         constrainedRightPos = GetConstrainedPosition(rightController.position, constrainedRightPos);
 
         Debug.Log(CheckShaftCollision(constrainedLeftPos, constrainedRightPos));
 
-        // ��������� ������������ ������� �����
         if (CheckShaftCollision(constrainedLeftPos, constrainedRightPos))
         {
-            // ���� �������� �������� ����� ����, ���������� ���������� �������
             constrainedLeftPos = leftBlade.constrainedPosition;
             constrainedRightPos = rightBlade.constrainedPosition;
         }
 
-        // ��������� ������� �������
         leftBlade.constrainedPosition = constrainedLeftPos;
         rightBlade.constrainedPosition = constrainedRightPos;
 
         float handDistance = Vector3.Distance(constrainedLeftPos, constrainedRightPos);
 
-        // �������� ������������ ���������� ����� ������
         isPaddleActive = handDistance >= minHandDistance && handDistance <= maxHandDistance;
 
-        // ����� ������� �� ������������� ���������
         doublePaddle.position = (constrainedLeftPos + constrainedRightPos) * 0.5f;
 
         Vector3 forward = constrainedRightPos - constrainedLeftPos;
@@ -123,23 +119,20 @@ public class DoublePaddleSystem : MonoBehaviour
 
         if (!isPaddleActive && showDebugInfo)
         {
-            //Debug.Log($"����� ���������! ���������� ����� ������: {handDistance:F2}m (���: {minHandDistance}m, ����: {maxHandDistance}m)");
+
         }
     }
 
     Vector3 GetConstrainedPosition(Vector3 targetPos, Vector3 currentPos)
     {
-        // ��������� ����� �� ������������� � ����� �������
         Vector3 direction = targetPos - currentPos;
         float distance = direction.magnitude;
 
         if (distance < 0.001f) return currentPos;
 
-        // ��������� ���� �� ������� �� ������� �������
         RaycastHit hit;
         if (Physics.SphereCast(currentPos, bladeCollisionRadius, direction.normalized, out hit, distance, blockingLayers))
         {
-            // ������������! ������������� �� �������
             Vector3 constrainedPos = currentPos + direction.normalized * Mathf.Max(0, hit.distance - bladeCollisionRadius * 0.5f);
 
             if (showDebugInfo)
@@ -149,15 +142,13 @@ public class DoublePaddleSystem : MonoBehaviour
 
             return constrainedPos;
         }
-
-        // �������������� �������� ������� �������
         if (Physics.CheckSphere(targetPos, bladeCollisionRadius, blockingLayers))
         {
             if (showDebugInfo)
             {
                 Debug.DrawLine(currentPos, targetPos, Color.yellow, 0.1f);
             }
-            return currentPos; // ��������� �� �����
+            return currentPos;
         }
 
         return targetPos;
@@ -165,7 +156,6 @@ public class DoublePaddleSystem : MonoBehaviour
 
     bool CheckShaftCollision(Vector3 leftPos, Vector3 rightPos)
     {
-        // ��������� �������� ����� ����� ���������
         for (int i = 0; i < shaftCheckPoints; i++)
         {
             float t = i / (float)(shaftCheckPoints - 1);
@@ -196,7 +186,6 @@ public class DoublePaddleSystem : MonoBehaviour
             _initialized = true;
         }
 
-        // ��������� ���� ������ ���� ����� �������
         if (!isPaddleActive)
         {
             leftInWater = false;
@@ -218,7 +207,6 @@ public class DoublePaddleSystem : MonoBehaviour
         Vector3 velocity = (current - lastPos) / Time.fixedDeltaTime;
         lastPos = current;
 
-        // ���� ������� ������ ������������ �������, �� ��������� ����
         if (Physics.CheckSphere(current, bladeCollisionRadius, blockingLayers))
         {
             inWater = false;
@@ -271,7 +259,6 @@ public class DoublePaddleSystem : MonoBehaviour
             Vector3 localVel = transform.InverseTransformDirection(relVel);
             float angleEff = CalculateBladeEfficiency(blade.bladeRoot.up);
 
-            // �������������� �������� ������������� ���� ���� ������� ������
             float handDistance = Vector3.Distance(constrainedLeftPos, constrainedRightPos);
             float distanceEfficiency = Mathf.Clamp01((handDistance - minHandDistance) / (maxHandDistance - minHandDistance));
             angleEff *= distanceEfficiency;
@@ -315,13 +302,11 @@ public class DoublePaddleSystem : MonoBehaviour
                 Application.isPlaying ? constrainedRightPos : rightController.position
             );
 
-            // ������ ����� ����� ��������� ���
             Gizmos.color = isPaddleActive ? Color.green : Color.red;
             if (Application.isPlaying)
             {
                 Gizmos.DrawLine(constrainedLeftPos, constrainedRightPos);
 
-                // ����� �� ������������ � ������������ ��������
                 Gizmos.color = Color.yellow;
                 Gizmos.DrawLine(leftController.position, constrainedLeftPos);
                 Gizmos.DrawLine(rightController.position, constrainedRightPos);
@@ -331,7 +316,6 @@ public class DoublePaddleSystem : MonoBehaviour
                 Gizmos.DrawLine(leftController.position, rightController.position);
             }
 
-            // ������ ����� ������������ � ������������� ����������
             Vector3 leftPos = Application.isPlaying ? constrainedLeftPos : leftController.position;
 
             Gizmos.color = new Color(1f, 1f, 0f, 0.3f);
@@ -340,7 +324,6 @@ public class DoublePaddleSystem : MonoBehaviour
             Gizmos.color = new Color(1f, 0.5f, 0f, 0.3f);
             Gizmos.DrawWireSphere(leftPos, maxHandDistance);
 
-            // ������ ����� �������� �� �������
             if (Application.isPlaying)
             {
                 Gizmos.color = new Color(0f, 1f, 1f, 0.5f);
@@ -384,7 +367,6 @@ public class DoublePaddleSystem : MonoBehaviour
         Gizmos.color = inWater ? Color.cyan : Color.yellow;
         Gizmos.DrawSphere(pos, 0.04f);
 
-        // ������ ������ �������� ������������
         Gizmos.color = new Color(1f, 0f, 0f, 0.2f);
         Gizmos.DrawWireSphere(pos, bladeCollisionRadius);
     }
@@ -393,7 +375,7 @@ public class DoublePaddleSystem : MonoBehaviour
     {
         if (minHandDistance >= maxHandDistance)
         {
-            Debug.LogWarning("minHandDistance ������ ���� ������ maxHandDistance!");
+            Debug.LogWarning("minHandDistance >= maxHandDistance!");
             minHandDistance = maxHandDistance - 0.1f;
         }
     }

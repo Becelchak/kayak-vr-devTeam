@@ -1,4 +1,4 @@
-using UnityEngine;
+п»їusing UnityEngine;
 
 public class StrokeLengthMeasurer : MonoBehaviour
 {
@@ -7,7 +7,7 @@ public class StrokeLengthMeasurer : MonoBehaviour
     [SerializeField] private MetricsCalculator metrics;
 
     [Header("Settings")]
-    [Tooltip("Если false – использовать весло")]
+    [Tooltip("Р•СЃР»Рё false вЂ“ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РІРµСЃР»Рѕ")]
     [SerializeField] private bool useBoatVelocity = true; 
     [SerializeField] private Transform leftBladeTip;
     [SerializeField] private Transform rightBladeTip;
@@ -19,16 +19,24 @@ public class StrokeLengthMeasurer : MonoBehaviour
 
     private void OnEnable()
     {
-        if (metrics != null)
-        {
-            metrics.OnStrokeStarted += StartStroke;
-            metrics.OnStrokeEnded += EndStroke;
-        }
+        //if (metrics != null)
+        //{
+        //    metrics.OnStrokeStarted += StartStroke;
+        //    metrics.OnStrokeEnded += EndStroke;
+        //}
         DoublePaddleSystem.OnLeftBladeEnterWater += OnBladeEnterWater;
         DoublePaddleSystem.OnRightBladeEnterWater += OnBladeEnterWater;
         DoublePaddleSystem.OnLeftBladeExitWater += OnBladeExitWater;
         DoublePaddleSystem.OnRightBladeExitWater += OnBladeExitWater;
 
+    }
+
+    private void OnDisable()
+    {
+        DoublePaddleSystem.OnLeftBladeEnterWater -= OnBladeEnterWater;
+        DoublePaddleSystem.OnRightBladeEnterWater -= OnBladeEnterWater;
+        DoublePaddleSystem.OnLeftBladeExitWater -= OnBladeExitWater;
+        DoublePaddleSystem.OnRightBladeExitWater -= OnBladeExitWater;
     }
 
     private void StartStroke()
@@ -59,24 +67,38 @@ public class StrokeLengthMeasurer : MonoBehaviour
         }
         else
         {
-            // Альтернатива: измерять перемещение лопасти (например, активной в данный момент)
-            // Нужно определить, какая лопасть сейчас в воде (левая или правая)
+            // РђР»СЊС‚РµСЂРЅР°С‚РёРІР°: РёР·РјРµСЂСЏС‚СЊ РїРµСЂРµРјРµС‰РµРЅРёРµ Р»РѕРїР°СЃС‚Рё (РЅР°РїСЂРёРјРµСЂ, Р°РєС‚РёРІРЅРѕР№ РІ РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚)
+            // РќСѓР¶РЅРѕ РѕРїСЂРµРґРµР»РёС‚СЊ, РєР°РєР°СЏ Р»РѕРїР°СЃС‚СЊ СЃРµР№С‡Р°СЃ РІ РІРѕРґРµ (Р»РµРІР°СЏ РёР»Рё РїСЂР°РІР°СЏ)
         }
     }
 
     private void OnBladeEnterWater()
     {
-        // Начало гребка (любая лопасть вошла в воду)
-        if (!isStroking)
-            StartStroke();
-        lastStrokePosition = kayakRb.position;
+        if (isStroking) return; // СѓР¶Рµ РіСЂРµР±С‘Рј, РёРіРЅРѕСЂРёСЂСѓРµРј РїРѕРІС‚РѕСЂРЅС‹Р№ РІС…РѕРґ (РґСЂСѓРіР°СЏ Р»РѕРїР°СЃС‚СЊ)
+        isStroking = true;
+        currentStrokeLength = 0f;
+        if (kayakRb != null)
+            lastStrokePosition = kayakRb.position;
+        Debug.Log("Stroke started");
     }
 
     private void OnBladeExitWater()
     {
-        // Окончание гребка (лопасть вышла из воды)
-        float travelled = Vector3.Distance(kayakRb.position, lastStrokePosition);
-        currentStrokeLength += travelled;
-        EndStroke();
+        if (!isStroking) return;
+        // Р’С‹С‡РёСЃР»СЏРµРј СЂР°СЃСЃС‚РѕСЏРЅРёРµ, РїСЂРѕР№РґРµРЅРЅРѕРµ РєР°СЏРєРѕРј РѕС‚ РЅР°С‡Р°Р»Р° РіСЂРµР±РєР° РґРѕ РІС‹С…РѕРґР° Р»РѕРїР°СЃС‚Рё
+        if (kayakRb != null && useBoatVelocity)
+        {
+            currentStrokeLength = Vector3.Distance(kayakRb.position, lastStrokePosition);
+        }
+        else
+        {
+            // РђР»СЊС‚РµСЂРЅР°С‚РёРІРЅС‹Р№ РјРµС‚РѕРґ (РµСЃР»Рё useBoatVelocity = false) вЂ“ РёР·РјРµСЂСЏС‚СЊ РїРµСЂРµРјРµС‰РµРЅРёРµ Р»РѕРїР°СЃС‚Рё
+            // РџРѕРєР° РЅРµ СЂРµР°Р»РёР·РѕРІР°РЅ, РїСЂРѕСЃС‚Рѕ РѕСЃС‚Р°РІР»СЏРµРј 0
+            currentStrokeLength = 0f;
+        }
+
+        metrics?.SetStrokeLength(currentStrokeLength);
+        isStroking = false;
+        Debug.Log($"Stroke ended. Length: {currentStrokeLength:F2} m");
     }
 }

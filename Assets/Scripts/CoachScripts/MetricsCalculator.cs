@@ -1,33 +1,33 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
 using System;
 
 public class MetricsCalculator : MonoBehaviour
 {
-    [Header("��������� �����")]
+    [Header("Kayak Parameters")]
     [SerializeField] private Rigidbody kayakBody;
-    [Tooltip("����������� ������������� ���� (F = drag * v)")]
+    [Tooltip("Water drag coefficient (F = drag * v)")]
     [SerializeField] private float waterDrag = 50f;
 
-    [Header("�������� �������")]
-    [Tooltip("����� ���� ��� ������ ������")]
+    [Header("Stroke Detection")]
+    [Tooltip("Порог power для гребка")]
     [SerializeField] private float powerThreshold = 5f;
-    [Tooltip("����������, ������������ ����� �� ������ � ������� ����. ��� ������ ����������, ��� ����� �������������� ������ ������ � ������� ����.")]
+    [Tooltip("Множитель для определения длины гребка (меньше = раньше конец гребка)")]
     [SerializeField] private float powerOffCoeficent = 0.5f;
-    [Tooltip("���. �������� ����� �������� (���)")]
+    [Tooltip("Минимальное время между гребками")]
     [SerializeField] private float minStrokeInterval = 0.3f;
-    [Tooltip("���. ����� ��� �������� ����� (���)")]
+    [Tooltip("Время после последнего гребка для фиксации нового (в секундах)")]
     [SerializeField] private float minTimeCheckStreetrate = 1f;
 
-    [Header("����������� (���������)")]
+    [Header("Дебаг (Console Output)")]
     [SerializeField] private bool logToConsole = true;
 
-    // ������� �������
-    public float StrokeRate { get; private set; }    // ���� (�������/���)
-    public float StrokeLength { get; private set; }  // ����� ������ (�)
-    public float Speed { get; private set; }         // �������� (�/�)
+    // Output metrics
+    public float StrokeRate { get; private set; }    // strokes per minute
+    public float StrokeLength { get; private set; }  // meters
+    public float Speed { get; private set; }         // meters per second
 
-    // ��������� ���� ��� ����������
+    // Private fields for calculation
     private float lastStrokeTime = -100f;
     private float lastStrokeRealTime = -100f;
     private int strokeCount = 0;
@@ -36,7 +36,7 @@ public class MetricsCalculator : MonoBehaviour
     private float currentPower = 0f;
     private float currentDPower = 0f;
     private float tempoDecayRate = 5f;
-    private Queue<float> recentStrokeIntervals = new Queue<float>(); // ��� ����������� �������� �����
+    private Queue<float> recentStrokeIntervals = new Queue<float>();
     public event Action<float, float, float> OnMetricsUpdated;
 
     public event Action OnStrokeStarted;
@@ -67,7 +67,6 @@ public class MetricsCalculator : MonoBehaviour
 
         if (logToConsole)
         {
-            //Debug.Log($"����: {StrokeRate:F1} ����/��� | ����� ������: {StrokeLength:F2} � | ��������: {Speed:F2} �/�");
         }
     }
 
@@ -106,7 +105,6 @@ public class MetricsCalculator : MonoBehaviour
             {
                 float strokeDuration = Time.time - strokeStartTime;
                 float deltaV = Speed - strokeStartVelocity;
-                //StrokeLength = (strokeStartVelocity + Speed) / 2f * strokeDuration;
                 strokeStartTime = 0f;
             }
             isStrokeInProgress = false;
@@ -119,7 +117,6 @@ public class MetricsCalculator : MonoBehaviour
     public void SetStrokeLength(float length)
     {
         StrokeLength = length;
-        // Debug.Log($"����� ������: {length:F2} �");
     }
 
     private void AddStrokeInterval(float interval)
@@ -145,8 +142,6 @@ public class MetricsCalculator : MonoBehaviour
 
     private float EstimateSpeedFromPower()
     {
-        // ������ ������: F = power / velocity? ���, power = F * v.
-        // ���� �������� ���� ���� �� ������: F = power / v (���������). ��������: v = sqrt(power / drag)
         if (currentPower <= 0) return 0;
         return Mathf.Sqrt(currentPower / waterDrag);
     }
