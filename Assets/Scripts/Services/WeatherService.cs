@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using Crest;
 using System;
+using System.Collections.Generic;
+using Crest.Spline;
 
-public class WeatherService : MonoBehaviour, IWeatherService
+public class WeatherService : BaseService, IWeatherService
 {
     [Header("Crest Flow")]
     [SerializeField] private bool useFlowVelocityField = true;
@@ -10,7 +12,7 @@ public class WeatherService : MonoBehaviour, IWeatherService
     [Header("Rain")]
     [SerializeField] private ParticleSystem rainParticleSystem;
 
-    [Header("Skybox Materials")]
+    [Header("Skybox Materials (Skybox/Cubemap)")]
     public Material sunnySkybox;
     public Material rainySkybox;
 
@@ -24,30 +26,43 @@ public class WeatherService : MonoBehaviour, IWeatherService
     [Tooltip("Скорость смены погоды")]
     public float transitionSpeed = 0.5f;
 
+    [Header("Other")]
+    [SerializeField] private GameObject splitPointParent;
+    private ShapeFFT shapeFFTComponent;
+
     private Material runtimeSkybox;
     private WeatherMode targetWeather = WeatherMode.Sunny;
 
+    // 0.0f (Солнце) -> 1.0f (Дождь)
     private float interpolationProgress = 0f;
 
     private OceanRenderer oceanRender;
-    private SplinePointDataFlow flowSettings;
-    private SplinePointDataWaves wavesSettings;
+    private List<SplinePointDataFlow> flowSettings = new();
+    private List<SplinePointDataWaves> wavesSettings = new();
 
     private float currentSpeed = 0f;
     private float currentAngle = 0f;
+    private float speedMultiplier = 1f;
     private bool isRaining = false;
     private bool environmentNeedsUpdate = false;
 
+    // Кешируем ID свойств шейдера для оптимизации производительности
+    private static readonly int ExposureID = Shader.PropertyToID("_Exposure");
+    private static readonly int TintID = Shader.PropertyToID("_Tint");
+    private static readonly int TexID = Shader.PropertyToID("_Tex");
+
+    private readonly (float angle, float speedMultiplier)[] states = new (float, float)[]
+    {
+        (0f, 0f),      // 0° - Стоячая вода
+        (90f, 1f),     // 90° - По оси Z
+        (180f, 1f),    // 180° - По оси X
+        (-90f, -1f),   // -90° - Против оси Z
+        (-180f, 1f)   // -180° - Против оси X
+    };
+
     private void Awake()
     {
-        if (OceanRenderer.Instance != null)
-        {
-            oceanRender = OceanRenderer.Instance;
-        }
-        else
-        {
-            Debug.LogWarning("Flow simulation not enabled in OceanRenderer!");
-        }
+        base.Awake();
 
         RenderSettings.fog = true;
 
@@ -55,6 +70,21 @@ public class WeatherService : MonoBehaviour, IWeatherService
         {
             runtimeSkybox = new Material(sunnySkybox);
             RenderSettings.skybox = runtimeSkybox;
+        }
+    }
+
+    private void Start()
+    {
+        if (OceanRenderer.Instance != null)
+        {
+            oceanRender = OceanRenderer.Instance;
+            flowSettings.AddRange(splitPointParent.GetComponentsInChildren<SplinePointDataFlow>());
+            wavesSettings.AddRange(splitPointParent.GetComponentsInChildren<SplinePointDataWaves>());
+            shapeFFTComponent = splitPointParent.GetComponent<ShapeFFT>();
+        }
+        else
+        {
+            Debug.LogWarning("Flow simulation not enabled in OceanRenderer!");
         }
     }
 
@@ -79,7 +109,32 @@ public class WeatherService : MonoBehaviour, IWeatherService
     {
         if (runtimeSkybox != null && sunnySkybox != null && rainySkybox != null)
         {
-            runtimeSkybox.Lerp(sunnySkybox, rainySkybox, progress);
+            Cubemap sunTex = sunnySkybox.GetTexture(TexID) as Cubemap;
+            Cubemap rainTex = rainySkybox.GetTexture(TexID) as Cubemap;
+
+            float sunMaxExposure = sunnySkybox.GetFloat(ExposureID);
+            float rainMaxExposure = rainySkybox.GetFloat(ExposureID);
+
+            Color sunColor = sunnySkybox.GetColor(TintID);
+            Color rainColor = rainySkybox.GetColor(TintID);
+
+            // Реализуем плавный переход через изменение параметров
+            if (progress < 0.5f)
+            {
+                runtimeSkybox.SetTexture(TexID, sunTex);
+
+                float localProgress = Mathf.InverseLerp(0f, 0.5f, progress);
+                runtimeSkybox.SetFloat(ExposureID, Mathf.Lerp(sunMaxExposure, 0f, localProgress));
+                runtimeSkybox.SetColor(TintID, Color.Lerp(sunColor, Color.gray, localProgress));
+            }
+            else
+            {
+                runtimeSkybox.SetTexture(TexID, rainTex);
+
+                float localProgress = Mathf.InverseLerp(0.5f, 1f, progress);
+                runtimeSkybox.SetFloat(ExposureID, Mathf.Lerp(0f, rainMaxExposure, localProgress));
+                runtimeSkybox.SetColor(TintID, Color.Lerp(Color.gray, rainColor, localProgress));
+            }
         }
 
         RenderSettings.fogColor = Color.Lerp(sunnyFogColor, rainyFogColor, progress);
@@ -94,19 +149,68 @@ public class WeatherService : MonoBehaviour, IWeatherService
             SetRain(false);
         }
     }
+
     public void SetWeatherMode(WeatherMode mode)
     {
         targetWeather = mode;
     }
 
-    public void SetFlowDirection(float angleDegrees)
+    public void SetFlowDirection(int state)
     {
-        currentAngle = angleDegrees;
+        currentAngle = states[state].angle;
+        speedMultiplier = states[state].speedMultiplier;
+        ApplyFlowDirection();
         ApplyFlow();
+    }
+
+    private void ApplyFlowDirection()
+    {
+        if (splitPointParent == null) return;
+
+        float splineRotationAngle;
+        float waveAngle;
+
+        // Если угол 0 – течение отключено (скорость 0), можно не вращать
+        if (Mathf.Approximately(currentAngle, 0f))
+        {
+            splineRotationAngle = 0f;
+            waveAngle = 0f;
+        }
+        else
+        {
+            // Волны всегда направлены по оси Z: 90° – вперёд, -90° – назад
+            waveAngle = currentAngle > 0 ? 90f : -90f;
+
+            // Вычисляем поворот сплайна в зависимости от угла
+            if (Mathf.Approximately(Mathf.Abs(currentAngle), 90f))
+            {
+                // Для 90° и -90° сплайн не поворачиваем – течение идёт вдоль Z
+                splineRotationAngle = 0f;
+            }
+            else if (Mathf.Approximately(Mathf.Abs(currentAngle), 180f))
+            {
+                // Для 180° поворачиваем сплайн на +90° (течение вдоль X+)
+                // Для -180° поворачиваем на -90° (течение вдоль X-)
+                splineRotationAngle = currentAngle > 0 ? 90f : -90f;
+            }
+            else
+            {
+                // Если угол другой (не 0, ±90, ±180) – используем его напрямую (на всякий случай)
+                splineRotationAngle = currentAngle;
+            }
+        }
+
+        splitPointParent.transform.rotation = Quaternion.Euler(0, splineRotationAngle, 0);
+
+        if (shapeFFTComponent != null)
+        {
+            shapeFFTComponent._waveDirectionHeadingAngle = waveAngle;
+        }
     }
 
     public void SetFlowSpeed(float speed)
     {
+        //Debug.Log($"flow speed = {speed}");
         currentSpeed = speed;
         ApplyFlow();
     }
@@ -118,17 +222,45 @@ public class WeatherService : MonoBehaviour, IWeatherService
         if (useFlowVelocityField)
         {
             Vector2 direction = Quaternion.Euler(0, currentAngle, 0) * Vector2.up;
-            flowSettings.FlowVelocity = direction.magnitude * currentSpeed;
+            foreach (var f in flowSettings)
+            {
+                f.FlowVelocity = direction.magnitude * currentSpeed * speedMultiplier;
+            }
         }
         else
         {
-            flowSettings.FlowVelocity = currentSpeed;
+            foreach (var f in flowSettings)
+            {
+                f.FlowVelocity = currentSpeed * speedMultiplier;
+                ForceUpdateSpline(f);
+            }
         }
 
-        wavesSettings.Weight = currentSpeed / 2;
-        oceanRender._globalWindSpeed = currentSpeed / 3;
+        foreach(var w in wavesSettings)
+        {
+            w.Weight = currentSpeed / 2;
+            ForceUpdateSpline(w);
+        }
+        if (oceanRender == null)
+            return;
+        oceanRender._globalWindSpeed = currentSpeed;
 
-        Debug.Log($"Flow changed: angle={currentAngle}, speed={currentSpeed}");
+        //Debug.Log($"Flow changed: angle={currentAngle}, speed={currentSpeed}");
+    }
+
+    private void ForceUpdateSpline(SplinePointDataBase pointData)
+    {
+        if (pointData == null) return;
+        var spline = pointData.GetComponentInParent<Spline>();
+        if (spline != null)
+        {
+            spline.UpdateSpline();
+        }
+        else
+        {
+            var flowInput = pointData.GetComponentInParent<RegisterFlowInput>();
+            flowInput?.OnSplineChange();
+        }
     }
 
     public void SetRain(bool active)
@@ -147,11 +279,14 @@ public class WeatherService : MonoBehaviour, IWeatherService
         }
     }
 
+    protected override Type GetServiceType() => typeof(IWeatherService);
+
     public float CurrentFlowSpeed => currentSpeed;
     public float CurrentFlowAngle => currentAngle;
     public bool IsRaining => isRaining;
     public WeatherMode CurrentWeather => interpolationProgress > 0.5f ? WeatherMode.Rainy : WeatherMode.Sunny;
 }
+
 
 [Serializable]
 public enum WeatherMode

@@ -70,7 +70,8 @@ public class ServiceLocator : MonoBehaviour
         var services = GetComponents<BaseService>();
         foreach (var service in services)
         {
-            Debug.Log($"Found service: {service.GetType().Name}");
+            Debug.Log($"Found service: {service.GetType().Name} and register");
+            RegisterService(service.GetType(), service);
         }
     }
 

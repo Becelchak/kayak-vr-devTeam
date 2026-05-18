@@ -1,0 +1,9 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:Toggle label="Дождь" name="RainToggle"/>
+    <ui:Button text="Солнечно" name="SunnyButton"/>
+    <ui:Button text="Дождливо" name="RainyButton"/>
+    <ui:SliderInt label="Направление течения (градусы)" value="42" high-value="4" name="FlowDirectionSlider"/>
+    <ui:Slider label="Скорость течения (м/с)" name="FlowSpeedSlider" lowValue="0" highValue="5"/>
+    <ui:Label name="FlowDirectionValue"/>
+    <ui:Label name="FlowSpeedValue"/>
+</ui:UXML>

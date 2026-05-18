@@ -1,7 +1,7 @@
-public interface IWeatherService
+﻿public interface IWeatherService
 {
     void SetRain(bool active);
-    void SetFlowDirection(float angleDegrees);
+    void SetFlowDirection(int state);
     void SetFlowSpeed(float speed);
     float CurrentFlowSpeed { get; }
     float CurrentFlowAngle { get; }
