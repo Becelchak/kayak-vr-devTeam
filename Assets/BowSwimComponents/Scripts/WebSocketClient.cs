@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -212,8 +212,9 @@ public class WebSocketClient : MonoBehaviour
                     string line = $"{_power},{_d_power},{elapsedTime}\n";
 
                     OnNewPower?.Invoke(_power, _d_power);
-                    if (pass_power != _power || pass_d_power != _d_power)
-                        OnPowerChanged?.Invoke(_power, _d_power);
+                    OnPowerChanged?.Invoke(_power, _d_power);
+                    //if (pass_power != _power || pass_d_power != _d_power)
+
 
                     pass_power = _power;
                     pass_d_power = _d_power;

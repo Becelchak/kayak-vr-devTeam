@@ -33,9 +33,6 @@ public class WeatherViewModel
         SetRainyCommand = new RelayCommand(() => SetWeatherMode(WeatherMode.Rainy));
         SetFlowDirectionCommand = new RelayCommand<int>(state => SetFlowDirectionFromService(state));
         SetFlowSpeedCommand = new RelayCommand<float>(spd => SetFlowDirectionFromService(spd));
-
-        // Подписка на изменения состояния (если сервис генерирует события)
-        // Если нет – можно просто вызывать PropertyChanged после каждого вызова команды
     }
 
     private void ToggleRain()

@@ -1,0 +1,14 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement style="flex-grow: 1; background-color: rgba(0, 0, 0, 0.8); border-radius: 10px;">
+        <ui:Label text="Результаты" name="Label" style="font-size: 24px; -unity-text-align: middle-center; margin-top: 10px;">
+            <ui:Button name="ResetButton" text="Перезапуск" style="margin-top: 20px; margin-bottom: 10px; align-self: center; width: 150px;"/>
+        </ui:Label>
+        <ui:Label name="TotalTime" text="Время: 0 с" style="margin-left: 20px; margin-top: 10px; background-color: rgba(255, 255, 255, 0.65);"/>
+        <ui:Label name="Distance" text="Дистанция: 0 м" style="margin-left: 20px; background-color: rgba(255, 255, 255, 0.65);"/>
+        <ui:Label name="AvgStrokeRate" text="Ср. темп: 0 греб/мин" style="margin-left: 20px; background-color: rgba(255, 255, 255, 0.65);"/>
+        <ui:Label name="AvgStrokeLength" text="Ср. длина гребка: 0 м" style="margin-left: 20px; background-color: rgba(253, 249, 249, 0.65);"/>
+        <ui:Label name="AvgSpeed" text="Ср. скорость: 0 м/с" style="margin-left: 20px; background-color: rgba(253, 244, 244, 0.65);"/>
+        <ui:Label name="MaxSpeed" text="Макс. скорость: 0 м/с" style="margin-left: 20px; background-color: rgba(245, 242, 242, 0.65);"/>
+        <ui:Label name="TotalStrokes" text="Всего гребков: 0" style="margin-left: 20px; background-color: rgba(255, 251, 251, 0.65);"/>
+    </ui:VisualElement>
+</ui:UXML>

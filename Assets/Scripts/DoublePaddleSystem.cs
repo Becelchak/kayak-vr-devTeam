@@ -94,7 +94,7 @@ public class DoublePaddleSystem : MonoBehaviour
         constrainedLeftPos = GetConstrainedPosition(leftController.position, constrainedLeftPos);
         constrainedRightPos = GetConstrainedPosition(rightController.position, constrainedRightPos);
 
-        Debug.Log(CheckShaftCollision(constrainedLeftPos, constrainedRightPos));
+        //Debug.Log(CheckShaftCollision(constrainedLeftPos, constrainedRightPos));
 
         if (CheckShaftCollision(constrainedLeftPos, constrainedRightPos))
         {
