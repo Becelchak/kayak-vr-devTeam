@@ -79,9 +79,9 @@ public class MetricsUIDisplay : MonoBehaviour
 
         // Обновляем текст с единицами измерения
         if (tempoText != null)
-            tempoText.text = $"{currentTempo.ToString(tempoFormat)} сек";
+            tempoText.text = $"{currentTempo.ToString(tempoFormat)} с";
         if (strokeLengthText != null)
-            strokeLengthText.text = $"{currentStrokeLength.ToString(strokeLengthFormat)} м";
+            strokeLengthText.text = $"{currentStrokeLength.ToString(strokeLengthFormat)}";
         if (speedText != null)
             speedText.text = $"{currentSpeed.ToString(speedFormat)} м/с";
 

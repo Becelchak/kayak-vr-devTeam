@@ -1,11 +1,24 @@
 {
   "dependencies": {
+    "com.monitor1394.xcharts": {
+      "version": "https://github.com/XCharts-Team/XCharts.git#3.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "3deda8d9ccf8276efa0ce444dd9d2432bc71a55c"
+    },
     "com.nobi.roundedcorners": {
       "version": "https://github.com/kirevdokimov/Unity-UI-Rounded-Corners.git",
       "depth": 0,
       "source": "git",
       "dependencies": {},
       "hash": "33135342e868201eb0d4cef821ecab90caca373e"
+    },
+    "com.unity.2d.sprite": {
+      "version": "1.0.0",
+      "depth": 0,
+      "source": "builtin",
+      "dependencies": {}
     },
     "com.unity.ai.navigation": {
       "version": "2.0.11",
@@ -44,14 +57,14 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.collections": {
-      "version": "2.6.2",
+      "version": "2.6.5",
       "depth": 2,
       "source": "registry",
       "dependencies": {
-        "com.unity.burst": "1.8.23",
+        "com.unity.burst": "1.8.27",
         "com.unity.mathematics": "1.3.2",
         "com.unity.test-framework": "1.4.6",
-        "com.unity.nuget.mono-cecil": "1.11.5",
+        "com.unity.nuget.mono-cecil": "1.11.6",
         "com.unity.test-framework.performance": "3.0.3"
       },
       "url": "https://packages.unity.com"
@@ -179,7 +192,7 @@
       }
     },
     "com.unity.splines": {
-      "version": "2.8.3",
+      "version": "2.8.4",
       "depth": 1,
       "source": "registry",
       "dependencies": {

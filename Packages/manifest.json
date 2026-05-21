@@ -1,6 +1,8 @@
 {
   "dependencies": {
+    "com.monitor1394.xcharts": "https://github.com/XCharts-Team/XCharts.git#3.0",
     "com.nobi.roundedcorners": "https://github.com/kirevdokimov/Unity-UI-Rounded-Corners.git",
+    "com.unity.2d.sprite": "1.0.0",
     "com.unity.ai.navigation": "2.0.11",
     "com.unity.cinemachine": "3.1.6",
     "com.unity.collab-proxy": "2.11.4",
