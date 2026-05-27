@@ -1,0 +1,38 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/UnityThemes/TrainingHUD.uss?fileID=7433441132597879392&amp;guid=4d2359946529a9b43a3cbc9a83cdbe5a&amp;type=3#TrainingHUD"/>
+    <ui:VisualElement class="hud-root">
+        <ui:VisualElement class="top-metrics">
+            <ui:VisualElement class="metric-card pace-card">
+                <ui:Label text="Темп (500м)" class="metric-title"/>
+                <ui:VisualElement class="metric-row">
+                    <ui:Label name="TempoValue" text="4.1с" class="metric-value"/>
+                    <ui:VisualElement class="value-group">
+                        <ui:Label name="TempoPrevValue" text="3.4с" class="metric-value previous-value"/>
+                        <ui:Label name="TempoArrow" text="▲" class="green-arrow"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="metric-card stroke-card">
+                <ui:Label text="Длина гребка" class="metric-title"/>
+                <ui:VisualElement class="metric-row">
+                    <ui:Label name="StrokeValue" text="130" class="metric-value"/>
+                    <ui:VisualElement class="value-group">
+                        <ui:Label name="StrokePrevValue" text="124" class="metric-value previous-value"/>
+                        <ui:Label name="StrokeArrow" text="▼" class="red-arrow"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement class="speed-panel">
+            <ui:VisualElement class="speed-row">
+                <ui:Label text="Скорость" class="speed-title"/>
+                <ui:Label name="SpeedValue" text="3.8м/с" class="speed-value"/>
+                <ui:VisualElement class="value-group">
+                    <ui:Label name="SpeedPrevValue" text="4.4м/с" class="speed-value previous-value"/>
+                    <ui:Label name="SpeedArrow" text="▲" class="green-arrow"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:Button name="SettingsButton" class="settings-button" style="background-color: rgba(188, 188, 188, 0);"/>
+    </ui:VisualElement>
+</ui:UXML>

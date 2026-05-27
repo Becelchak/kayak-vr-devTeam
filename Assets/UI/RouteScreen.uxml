@@ -1,0 +1,73 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI Toolkit/UnityThemes/RouteScreen.uss"/>
+    <ui:VisualElement class="root">
+        <ui:VisualElement class="background" style="background-image: url(&quot;project://database/Assets/Texture/UI/bg_menu_kayak.png?fileID=2800000&amp;guid=8a70c8154a66d5f42aa75adf8305ef76&amp;type=3#bg_menu_kayak&quot;);"/>
+        <ui:VisualElement class="top-bar" style="border-top-left-radius: 0; border-top-right-radius: 0;">
+            <ui:Label text="Добрый день, Александр!" class="header-title"/>
+            <ui:VisualElement class="top-icons">
+                <ui:Button name="settings-button" class="icon-button" style="background-image: url(&quot;project://database/Assets/UI/Icons/settings_play.png?fileID=2800000&amp;guid=695491ab515f0f248b2037d983529190&amp;type=3#settings_play&quot;); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; background-color: rgba(188, 188, 188, 0);">
+                    <ui:Label text="⚙" class="icon-text"/>
+                </ui:Button>
+                <ui:Button name="profile-button" class="icon-button" style="background-image: url(&quot;project://database/Assets/UI/Icons/account_play.png?fileID=2800000&amp;guid=928f339640f69c748a37f18a4519da07&amp;type=3#account_play&quot;); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; background-color: rgba(255, 255, 255, 0);">
+                    <ui:Label text="👤" class="icon-text"/>
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement class="content">
+            <ui:VisualElement class="left-panel glass">
+                <ui:Label text="Выбор маршрута" class="panel-title"/>
+                <ui:VisualElement class="slider-container">
+                    <ui:VisualElement name="RouteImage" class="route-image"/>
+                    <ui:Button name="LeftArrow" text="" class="slider-arrow left-arrow" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; background-color: rgba(188, 188, 188, 0);"/>
+                    <ui:Button name="RightArrow" class="slider-arrow right-arrow" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; background-color: rgba(188, 188, 188, 0);"/>
+                    <ui:VisualElement class="pagination">
+                        <ui:VisualElement class="dot active"/>
+                        <ui:VisualElement class="dot"/>
+                        <ui:VisualElement class="dot"/>
+                        <ui:VisualElement class="dot"/>
+                        <ui:VisualElement class="dot"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:Label text="Описание:" class="description-title"/>
+                <ui:Label text="Трасса &apos;Берёзовая Роща&apos; — 8 км по медленному течению с порогами I–II; проходит через берёзовые леса и живописные заливы. Время прохождения 3–4 часа." class="description-text"/>
+                <ui:Label text="Длина: 8 км (в одну сторону)." class="description-text"/>
+                <ui:Label text="Сложность: средняя — только в сопровождении инструктора." class="description-text"/>
+                <ui:Label text="Тип воды: медленное течение реки." class="description-text"/>
+                <ui:Button name="StartTrainingButton" text="Начать тренировку" class="start-button"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="right-column">
+                <ui:VisualElement class="stats-panel glass">
+                    <ui:Label text="Статистика" class="panel-title"/>
+                    <ui:VisualElement class="chart-container">
+                        <ui:Button name="ChartLeftArrow" class="chart-arrow chart-arrow-left" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; background-color: rgba(188, 188, 188, 0);"/>
+                        <ui:VisualElement name="ChartArea" class="chart-area"/>
+                        <ui:Button name="ChartRightArrow" class="chart-arrow chart-arrow-right" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; background-color: rgba(188, 188, 188, 0);"/>
+                    </ui:VisualElement>
+                    <ui:Label text="Александр Рудсков" class="stats-name"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="rating-panel glass">
+                    <ui:Label text="Лучшее время за месяц" class="rating-title"/>
+                    <ui:VisualElement name="StatsList" class="rating-list">
+                        <ui:VisualElement class="rating-row active-row">
+                            <ui:Label text="Александр Рудсков"/>
+                            <ui:Label text="10 мин"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="rating-row">
+                            <ui:Label text="Николай Валов"/>
+                            <ui:Label text="11 мин"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="rating-row">
+                            <ui:Label text="Станислав Антипов"/>
+                            <ui:Label text="13 мин"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="rating-row">
+                            <ui:Label text="Игорь Горемыка"/>
+                            <ui:Label text="15 мин"/>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:Button name="FullTableButton" text="Полная таблица" class="table-button"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

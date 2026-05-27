@@ -1,0 +1,152 @@
+/* TrainingHUD.uss - Дашборд для отображения метрик */
+
+.hud-root {
+    flex-grow: 1;
+    position: relative;
+}
+
+/* ---------- TOP METRICS ---------- */
+
+.top-metrics {
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    translate: -50% 0;
+    flex-direction: row;
+}
+
+.metric-card {
+    width: 250px;
+    height: 125px;
+    margin-left: 14px;
+    margin-right: 14px;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    padding-left: 24px;
+    padding-right: 24px;
+    border-radius: 28px;
+    background-color: rgba(255, 255, 255, 0.82);
+    justify-content: space-between;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.heart-card {
+    width: 150px;
+}
+
+.metric-title {
+    font-family: "Roboto";
+    font-size: 18px;
+    -unity-font-weight: 400;  /* Regular = 400 */
+    -unity-line-height: 1.4;  /* 140% = 1.4 */
+    letter-spacing: 0px;
+    -unity-text-align: middle-center;
+}
+
+.metric-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.metric-value {
+    font-family: "Roboto";
+    font-size: 32px;
+    -unity-font-weight: 500;  /* Regular = 400 */
+    -unity-line-height: 1.4;  /* 140% = 1.4 */
+    letter-spacing: 0px;
+    -unity-text-align: middle-center;
+    color: rgb(20, 20, 20);
+}
+
+
+.metric-big-value {
+    -unity-text-align: middle-center;
+    font-size: 42px;
+    -unity-font-style: bold;
+    color: rgb(20, 20, 20);
+    flex-grow: 1;
+}
+
+.value-group {
+    flex-direction: row;
+    align-items: center;
+}
+
+.green-arrow {
+    margin-left: 1px;
+    color: rgb(76, 190, 76);
+    font-size: 20px;
+}
+
+.red-arrow {
+    margin-left: 1px;
+    color: rgb(220, 40, 40);
+    font-size: 20px;
+}
+
+/* ---------- SPEED PANEL ---------- */
+
+.speed-panel {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    translate: -50% 0;
+    width: 450px;
+    height: 120px;
+    padding-left: 12px;
+    padding-right: 12px;
+    border-radius: 16px;
+    background-color: rgba(255, 255, 255, 0.82);
+    justify-content: center;
+}
+
+.speed-row {
+    flex-direction: row;
+    align-items: center;
+}
+
+.speed-title {
+    font-family: "Roboto";
+    font-size: 32px;
+    -unity-font-weight: 500;  /* Regular = 400 */
+    -unity-line-height: 1.4;  /* 140% = 1.4 */
+    letter-spacing: 1%;
+    -unity-text-align: middle-center;
+
+    color: rgb(20, 20, 20);
+}
+
+.speed-value {
+    font-family: "Roboto";
+    font-size: 32px;
+    -unity-font-weight: 500;  /* Regular = 400 */
+    -unity-line-height: 1.4;  /* 140% = 1.4 */
+    letter-spacing: 1%;
+    -unity-text-align: middle-center;
+
+    color: rgb(20, 20, 20);
+}
+
+.speed-value.previous-value {
+    margin-left: 36px;
+    font-size: 25px;
+}
+
+/* ---------- SETTINGS BUTTON ---------- */
+
+.settings-button {
+    position: absolute;
+    right: 60px;
+    bottom: 60px;
+    width: 60px;
+    height: 60px;
+    border: none;
+    background-image: url("project://database/Assets/UI/Icons/settings-live.png");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-width: 0;
+}
