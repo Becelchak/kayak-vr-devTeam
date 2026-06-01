@@ -1,24 +1,45 @@
+п»їusing Unity.VisualScripting;
 using UnityEngine;
 
+/// <summary>
+/// РЈРїСЂР°РІР»РµРЅРёРµ РєР°РјРµСЂРѕР№ С‚СЂРµРЅРµСЂР°: СЂРµР¶РёРјС‹ СЃРІРѕР±РѕРґРЅРѕРіРѕ РїРѕР»С‘С‚Р° Рё СЃР»РµР¶РµРЅРёСЏ Р·Р° РєР°СЏРєРѕРј.
+/// РџРѕРґРґРµСЂР¶РёРІР°РµС‚ Р±Р»РѕРєРёСЂРѕРІРєСѓ СѓРїСЂР°РІР»РµРЅРёСЏ РїСЂРё Р°РєС‚РёРІРЅС‹С… UI-СЌР»РµРјРµРЅС‚Р°С….
+/// </summary>
 public class CoachCameraController : MonoBehaviour
 {
-    [Header("Режимы")]
-    public Transform target;            // цель для слежения (каяк)
-    public bool followMode = true;       // начальный режим
-    public Vector3 followOffset = new Vector3(5f, 2f, 0f); // смещение относительно цели
+    [Header("Р РµР¶РёРјС‹")]
+    [Tooltip("Р¦РµР»СЊ РґР»СЏ СЃР»РµР¶РµРЅРёСЏ (РєР°СЏРє)")]
+    public Transform target;
+    [Tooltip("РќР°С‡Р°Р»СЊРЅС‹Р№ СЂРµР¶РёРј (true = СЃР»РµР¶РµРЅРёРµ, false = СЃРІРѕР±РѕРґРЅС‹Р№ РїРѕР»С‘С‚)")]
+    public bool followMode = true;
+    [Tooltip("РЎРјРµС‰РµРЅРёРµ РєР°РјРµСЂС‹ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ С†РµР»Рё РІ СЂРµР¶РёРјРµ СЃР»РµР¶РµРЅРёСЏ")]
+    public Vector3 followOffset = new Vector3(5f, 2f, 0f);
 
-    [Header("Скорости")]
+    [Header("РЎРєРѕСЂРѕСЃС‚Рё")]
+    [Tooltip("РЎРєРѕСЂРѕСЃС‚СЊ РїРµСЂРµРјРµС‰РµРЅРёСЏ РІ СЃРІРѕР±РѕРґРЅРѕРј СЂРµР¶РёРјРµ")]
     public float moveSpeed = 10f;
+    [Tooltip("Р§СѓРІСЃС‚РІРёС‚РµР»СЊРЅРѕСЃС‚СЊ РїРѕРІРѕСЂРѕС‚Р° РјС‹С€Рё")]
     public float lookSpeed = 2f;
-    public float fastSpeedMultiplier = 2f;   // ускорение при Shift
-    public float followLerpSpeed = 5f;        // плавность следования
+    [Tooltip("РњРЅРѕР¶РёС‚РµР»СЊ СЃРєРѕСЂРѕСЃС‚Рё РїСЂРё Р·Р°Р¶Р°С‚РѕРј Shift")]
+    public float fastSpeedMultiplier = 2f;
+    [Tooltip("РЎРєРѕСЂРѕСЃС‚СЊ РёРЅС‚РµСЂРїРѕР»СЏС†РёРё РІ СЂРµР¶РёРјРµ СЃР»РµР¶РµРЅРёСЏ")]
+    public float followLerpSpeed = 5f;
 
-    [Header("Ограничения поворота (FreeFly)")]
+    [Header("РћРіСЂР°РЅРёС‡РµРЅРёСЏ РїРѕРІРѕСЂРѕС‚Р° (FreeFly)")]
+    [Tooltip("РњРёРЅРёРјР°Р»СЊРЅС‹Р№ СѓРіРѕР» РЅР°РєР»РѕРЅР° РєР°РјРµСЂС‹ РІРЅРёР·")]
     public float minPitch = -80f;
+    [Tooltip("РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ СѓРіРѕР» РЅР°РєР»РѕРЅР° РєР°РјРµСЂС‹ РІРІРµСЂС…")]
     public float maxPitch = 80f;
+
+    [Header("РЈРїСЂР°РІР»РµРЅРёРµ")]
+    // РЎС‚Р°С‚РёС‡РµСЃРєРёР№ СЃС‡С‘С‚С‡РёРє Р°РєС‚РёРІРЅС‹С… UI-СЌР»РµРјРµРЅС‚РѕРІ, Р±Р»РѕРєРёСЂСѓСЋС‰РёС… РєР°РјРµСЂСѓ
+    private static int _uiLockCount = 0;
+    private bool IsUILocked => _uiLockCount > 0;
 
     private float pitch = 0f;
     private float yaw = 0f;
+    private float currentAngleX = 0f;
+    private float currentAngleY = 20f;
     private bool freeFlyMode = false;
 
     void Start()
@@ -33,10 +54,24 @@ public class CoachCameraController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Р’С‹Р·С‹РІР°РµС‚СЃСЏ UI-СЌР»РµРјРµРЅС‚РѕРј РїСЂРё РѕС‚РєСЂС‹С‚РёРё (OnEnable)
+    /// </summary>
+    public static void AddUILock()
+    {
+        _uiLockCount++;
+    }
+
+    /// <summary>
+    /// Р’С‹Р·С‹РІР°РµС‚СЃСЏ UI-СЌР»РµРјРµРЅС‚РѕРј РїСЂРё Р·Р°РєСЂС‹С‚РёРё (OnDisable/OnDestroy)
+    /// </summary>
+    public static void RemoveUILock()
+    {
+        if (_uiLockCount > 0) _uiLockCount--;
+    }
+
     void Update()
     {
-        // Переключение режимов по клавише F
-        // В теории можно заменить на InputSystem, для интеграции с джойстиком
         if (Input.GetKeyDown(KeyCode.F))
         {
             ToggleMode();
@@ -81,7 +116,8 @@ public class CoachCameraController : MonoBehaviour
 
     void UpdateFreeFly()
     {
-        // В теории можно заменить на InputSystem, для интеграции с джойстиком
+        if (IsUILocked) return;
+
         float mouseX = Input.GetAxis("Mouse X") * lookSpeed;
         float mouseY = Input.GetAxis("Mouse Y") * lookSpeed;
 
@@ -107,12 +143,14 @@ public class CoachCameraController : MonoBehaviour
 
     void UpdateFollow()
     {
-        if (target == null) return;
+        if (target == null || IsUILocked) return;
 
-        // Желаемая позиция — цель + смещение в локальных координатах цели?
-        // Проще: смещение в мировых координатах, но с учётом направления цели.
-        // Например, камера всегда смотрит на цель с фиксированной стороны.
-        Vector3 desiredPosition = target.position + followOffset;
+        currentAngleX += Input.GetAxis("Mouse X") * lookSpeed;
+        currentAngleY -= Input.GetAxis("Mouse Y") * lookSpeed;
+        currentAngleY = Mathf.Clamp(currentAngleY, -80f, 80f);
+
+        Quaternion rotation = Quaternion.Euler(currentAngleY, currentAngleX, 0);
+        Vector3 desiredPosition = target.position + rotation * followOffset;
         transform.position = Vector3.Lerp(transform.position, desiredPosition, followLerpSpeed * Time.deltaTime);
         transform.LookAt(target);
     }

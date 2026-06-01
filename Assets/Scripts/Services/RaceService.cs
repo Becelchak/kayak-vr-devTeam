@@ -2,19 +2,28 @@
 using System;
 using System.Collections.Generic;
 
+/// <summary>
+/// Управление трассой: старт/финиш, сбор статистики, отображение линии маршрута.
+/// </summary>
 public class RaceService : BaseService, IRaceService
 {
     [Header("Race Points")]
+    [Tooltip("Точка старта (коллайдер-триггер)")]
     [SerializeField] private Transform startPoint;
+    [Tooltip("Точка финиша (коллайдер-триггер)")]
     [SerializeField] private Transform finishPoint;
 
     [Header("UI References")]
+    [Tooltip("Префаб окна статистики (UIDocument)")]
     [SerializeField] private GameObject raceResultUIPrefab;
 
     [Header("MiniMap Line")]
+    [Tooltip("LineRenderer для отображения маршрута на миникарте")]
     [SerializeField] private LineRenderer raceLine;
+    [Tooltip("Материал линии маршрута")]
     [SerializeField] private Material lineMaterial;
 
+    /// <summary>Событие, вызываемое при завершении гонки. Передаёт статистику.</summary>
     public event Action<RaceStatistics> OnRaceFinished;
 
     private RaceStatistics currentStats;
@@ -30,11 +39,9 @@ public class RaceService : BaseService, IRaceService
 
     private void Start()
     {
-        // Находим ригидбоди каяка (тег "Player")
         var kayak = GameObject.FindGameObjectWithTag("Player");
         if (kayak != null) kayakRigidbody = kayak.GetComponent<Rigidbody>();
 
-        // Настройка LineRenderer (если не назначен в инспекторе, создаём)
         if (raceLine == null)
         {
             GameObject lineObj = new GameObject("RaceLine");
@@ -47,7 +54,7 @@ public class RaceService : BaseService, IRaceService
         raceLine.startWidth = 5f;
         raceLine.endWidth = 5f;
         //raceLine.material = lineMaterial;
-        raceLine.enabled = true; // линия видна всегда (можно управлять)
+        raceLine.enabled = true;
     }
 
     public void StartRace()
@@ -157,21 +164,6 @@ public class RaceService : BaseService, IRaceService
             }
         }
     }
-
-    private Vector3 GetKayakPosition()
-    {
-        var kayak = GameObject.FindGameObjectWithTag("Player");
-        return kayak != null ? kayak.transform.position : Vector3.zero;
-    }
-
-    //void Update()
-    //{
-    //    if (!isRaceActive) return;
-    //    if (Vector3.Distance(GetKayakPosition(), finishPoint.position) < 2f)
-    //    {
-    //        FinishRace();
-    //    }
-    //}
 
     private float Average(List<float> list)
     {

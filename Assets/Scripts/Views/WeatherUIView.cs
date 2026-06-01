@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
 using UnityEngine.UIElements;
 
+/// <summary>
+/// View-компонент панели управления погодой. Привязывает UI-элементы к WeatherViewModel.
+/// Управляет блокировкой камеры при активации окна (если используется).
+/// </summary>
 public class WeatherUIView : MonoBehaviour
 {
     private WeatherViewModel viewModel;
     private UIDocument uiDocument;
 
-    // Сохраняем ссылки на элементы, чтобы отписаться
     private Toggle rainToggle;
     private Button sunnyBtn;
     private Button rainyBtn;
@@ -18,7 +21,6 @@ public class WeatherUIView : MonoBehaviour
         uiDocument = GetComponent<UIDocument>();
         viewModel = new WeatherViewModel();
 
-        // Подписка на обновления свойств
         viewModel.PropertyChanged += UpdateUI;
     }
 
@@ -26,19 +28,10 @@ public class WeatherUIView : MonoBehaviour
     {
         var root = uiDocument.rootVisualElement;
 
-        // Инициализация элементов
-        rainToggle = root.Q<Toggle>("RainToggle");
         sunnyBtn = root.Q<Button>("SunnyButton");
         rainyBtn = root.Q<Button>("RainyButton");
         dirSlider = root.Q<SliderInt>("FlowDirectionSlider");
         speedSlider = root.Q<Slider>("FlowSpeedSlider");
-
-        // Подписка на события UI
-        if (rainToggle != null)
-        {
-            rainToggle.RegisterValueChangedCallback(OnRainToggleChanged);
-            rainToggle.SetValueWithoutNotify(viewModel.IsRaining);
-        }
 
         if (sunnyBtn != null)
             sunnyBtn.clicked += OnSunnyClicked;
@@ -58,15 +51,11 @@ public class WeatherUIView : MonoBehaviour
         if (speedSlider != null)
             speedSlider.RegisterValueChangedCallback(OnSpeedChanged);
 
-        // Обновить текстовые метки
         UpdateUI();
     }
 
     private void OnDisable()
     {
-        // Отписка от событий во избежание утечек памяти
-        if (rainToggle != null)
-            rainToggle.UnregisterValueChangedCallback(OnRainToggleChanged);
 
         if (sunnyBtn != null)
             sunnyBtn.clicked -= OnSunnyClicked;
@@ -83,17 +72,8 @@ public class WeatherUIView : MonoBehaviour
 
     private void OnDestroy()
     {
-        // Отписка от события ViewModel
         if (viewModel != null)
             viewModel.PropertyChanged -= UpdateUI;
-    }
-
-    // Обработчики UI событий
-    private void OnRainToggleChanged(ChangeEvent<bool> evt)
-    {
-        viewModel.ToggleRainCommand.Execute();
-        // UI синхронизируется через UpdateUI, но для мгновенности можно и так:
-        // rainToggle.SetValueWithoutNotify(viewModel.IsRaining);
     }
 
     private void OnSunnyClicked() => viewModel.SetSunnyCommand.Execute();

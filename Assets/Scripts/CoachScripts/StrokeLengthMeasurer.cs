@@ -19,11 +19,6 @@ public class StrokeLengthMeasurer : MonoBehaviour
 
     private void OnEnable()
     {
-        //if (metrics != null)
-        //{
-        //    metrics.OnStrokeStarted += StartStroke;
-        //    metrics.OnStrokeEnded += EndStroke;
-        //}
         DoublePaddleSystem.OnLeftBladeEnterWater += OnBladeEnterWater;
         DoublePaddleSystem.OnRightBladeEnterWater += OnBladeEnterWater;
         DoublePaddleSystem.OnLeftBladeExitWater += OnBladeExitWater;
@@ -39,20 +34,20 @@ public class StrokeLengthMeasurer : MonoBehaviour
         DoublePaddleSystem.OnRightBladeExitWater -= OnBladeExitWater;
     }
 
-    private void StartStroke()
-    {
-        Debug.Log("Start Stroke");
-        isStroking = true;
-        currentStrokeLength = 0f;
-        if (kayakRb != null) lastBoatPos = kayakRb.position;
-    }
+    //private void StartStroke()
+    //{
+    //    Debug.Log("Start Stroke");
+    //    isStroking = true;
+    //    currentStrokeLength = 0f;
+    //    if (kayakRb != null) lastBoatPos = kayakRb.position;
+    //}
 
-    private void EndStroke()
-    {
-        Debug.Log("End Stroke");
-        isStroking = false;
-        metrics?.SetStrokeLength(currentStrokeLength);
-    }
+    //private void EndStroke()
+    //{
+    //    Debug.Log("End Stroke");
+    //    isStroking = false;
+    //    metrics?.SetStrokeLength(currentStrokeLength);
+    //}
 
     private void FixedUpdate()
     {
@@ -68,7 +63,7 @@ public class StrokeLengthMeasurer : MonoBehaviour
         else
         {
             // Альтернатива: измерять перемещение лопасти (например, активной в данный момент)
-            // Нужно определить, какая лопасть сейчас в воде (левая или правая)
+            // Не реализовано ввиду наивероятнейшей бесполезности
         }
     }
 
@@ -85,7 +80,7 @@ public class StrokeLengthMeasurer : MonoBehaviour
     private void OnBladeExitWater()
     {
         if (!isStroking) return;
-        // Вычисляем расстояние, пройденное каяком от начала гребка до выхода лопасти
+        // Вычисляется расстояние, пройденное каяком от начала гребка до выхода лопасти
         if (kayakRb != null && useBoatVelocity)
         {
             currentStrokeLength = Vector3.Distance(kayakRb.position, lastStrokePosition);
@@ -93,7 +88,7 @@ public class StrokeLengthMeasurer : MonoBehaviour
         else
         {
             // Альтернативный метод (если useBoatVelocity = false) – измерять перемещение лопасти
-            // Пока не реализован, просто оставляем 0
+            // Пока не реализован, просто ставится 0
             currentStrokeLength = 0f;
         }
 

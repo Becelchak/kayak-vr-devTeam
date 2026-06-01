@@ -4,22 +4,34 @@ using System;
 using System.Collections.Generic;
 using Crest.Spline;
 
+/// <summary>
+/// Сервис управления погодой: дождь/солнечно, течение и направление волн.
+/// Реализует плавный переход между солнечной и дождливой погодой.
+/// </summary>
 public class WeatherService : BaseService, IWeatherService
 {
     [Header("Crest Flow")]
+    [Tooltip("Использовать поле скорости потока (иначе — скорость сплайна)")]
     [SerializeField] private bool useFlowVelocityField = true;
 
     [Header("Rain")]
+    [Tooltip("Система частиц дождя")]
     [SerializeField] private ParticleSystem rainParticleSystem;
 
     [Header("Skybox Materials (Skybox/Cubemap)")]
+    [Tooltip("Материал скайбокса для солнечной погоды")]
     public Material sunnySkybox;
+    [Tooltip("Материал скайбокса для дождливой погоды")]
     public Material rainySkybox;
 
     [Header("Fog Settings")]
+    [Tooltip("Цвет тумана при солнце")]
     public Color sunnyFogColor = new Color(0.5f, 0.7f, 0.9f);
+    [Tooltip("Цвет тумана при дожде")]
     public Color rainyFogColor = new Color(0.2f, 0.2f, 0.25f);
+    [Tooltip("Плотность тумана при солнце")]
     public float sunnyFogDensity = 0.005f;
+    [Tooltip("Плотность тумана при дожде")]
     public float rainyFogDensity = 0.03f;
 
     [Header("Transition")]
@@ -27,13 +39,15 @@ public class WeatherService : BaseService, IWeatherService
     public float transitionSpeed = 0.5f;
 
     [Header("Other")]
+    [Tooltip("Родительский объект сплайна течения (IsetSplineRiver)")]
     [SerializeField] private GameObject splitPointParent;
     private ShapeFFT shapeFFTComponent;
 
+    [Tooltip("Материал скайбокса")]
     private Material runtimeSkybox;
     private WeatherMode targetWeather = WeatherMode.Sunny;
 
-    // 0.0f (Солнце) -> 1.0f (Дождь)
+    [Tooltip("Прогрессия перехода от солнечной погоды к дождливой и наоборот. 0.0f (Солнце) -> 1.0f (Дождь)")]
     private float interpolationProgress = 0f;
 
     private OceanRenderer oceanRender;
