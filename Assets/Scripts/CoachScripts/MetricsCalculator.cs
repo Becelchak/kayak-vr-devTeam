@@ -2,9 +2,14 @@
 using System.Collections.Generic;
 using System;
 
+/// <summary>
+/// Расчёт метрик гребли: темп, длина гребка, скорость.
+/// Подписывается на событие WebSocketClient.OnPowerChanged.
+/// </summary>
 public class MetricsCalculator : MonoBehaviour
 {
     [Header("Kayak Parameters")]
+    [Tooltip("Rigidbody каяка (для получения скорости)")]
     [SerializeField] private Rigidbody kayakBody;
     [Tooltip("Water drag coefficient (F = drag * v)")]
     [SerializeField] private float waterDrag = 50f;
@@ -20,14 +25,19 @@ public class MetricsCalculator : MonoBehaviour
     [SerializeField] private float minTimeCheckStreetrate = 1f;
 
     [Header("Дебаг (Console Output)")]
+    [Tooltip("Выводить ли метрики в консоль")]
     [SerializeField] private bool logToConsole = true;
 
-    // Output metrics
-    public float StrokeRate { get; private set; }    // strokes per minute
-    public float StrokeLength { get; private set; }  // meters
-    public float Speed { get; private set; }         // meters per second
+    #region Output metrics
+    /// <summary>Темп гребков (гребков/минуту).</summary>
+    public float StrokeRate { get; private set; }
+    /// <summary>Длина гребка (метры).</summary>
+    public float StrokeLength { get; private set; }
+    /// <summary>Скорость каяка (м/с).</summary>
+    public float Speed { get; private set; }
+    #endregion
 
-    // Private fields for calculation
+    # region Private fields for calculation
     private float lastStrokeTime = -100f;
     private float lastStrokeRealTime = -100f;
     private int strokeCount = 0;
@@ -37,12 +47,15 @@ public class MetricsCalculator : MonoBehaviour
     private float currentDPower = 0f;
     private float tempoDecayRate = 5f;
     private Queue<float> recentStrokeIntervals = new Queue<float>();
+    /// <summary>Событие обновления метрик (темп, длина, скорость).</summary>
     public event Action<float, float, float> OnMetricsUpdated;
-
+    /// <summary>Событие начала гребка.</summary>
     public event Action OnStrokeStarted;
+    /// <summary>Событие окончания гребка.</summary>
     public event Action OnStrokeEnded;
 
     private bool isStrokeInProgress = false;
+    #endregion
 
     private void OnEnable()
     {
