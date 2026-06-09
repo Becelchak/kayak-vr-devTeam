@@ -102,8 +102,8 @@ public class CoachCameraController : MonoBehaviour
         yaw = angles.y;
         pitch = angles.x;
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
     }
 
     void EnterFollowMode()

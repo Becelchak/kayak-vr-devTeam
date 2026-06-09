@@ -20,15 +20,15 @@ public class UIToolkitManager : MonoBehaviour
     [SerializeField] private GameObject athleteSystem;
     [SerializeField] private GameObject coachSystem;
 
+    private string selectedRole = "athlete";
+
     // Элементы дашборда
     private Label tempoValue;
     private Label strokeValue;
     private Label speedValue;
-
     private Label tempoPrevValue;
     private Label strokePrevValue;
     private Label speedPrevValue;
-
     private Label tempoArrow;
     private Label strokeArrow;
     private Label speedArrow;
@@ -39,9 +39,9 @@ public class UIToolkitManager : MonoBehaviour
     private float previousSpeed;
 
     // Стандартные значения для сравнения
-    private float standardTempo = 4.1f;      // стандартный темп (сек)
-    private float standardStrokeLength = 130; // стандартная длина гребка (см)
-    private float standardSpeed = 3.8f;       // стандартная скорость (м/с)
+    private float standardTempo = 4.1f;
+    private float standardStrokeLength = 130f;
+    private float standardSpeed = 3.8f;
 
     // Элементы таблицы
     private VisualElement statsList;
@@ -50,6 +50,10 @@ public class UIToolkitManager : MonoBehaviour
     // Элементы карусели
     private int currentRouteIndex;
     private List<RouteData> routes;
+
+    // График
+    private GraphController graphController;
+    private int currentGraphType = 0;
 
     private void Start()
     {
@@ -60,49 +64,49 @@ public class UIToolkitManager : MonoBehaviour
         SetupCursor();
         SetupGraph();
 
-        Invoke(nameof(ForceShowCursor), 0.1f);
-
         if (metricsCalculator != null)
             metricsCalculator.OnMetricsUpdated += UpdateDashboard;
-    }
-
-    private void ForceShowCursor()
-    {
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
-        Debug.Log("Cursor forced visible");
+        else
+            Debug.LogError("MetricsCalculator is NULL! Assign it in Inspector.");
     }
 
     private void SetupDashboard()
     {
         if (dashboardDocument == null)
         {
-            Debug.LogWarning("Dashboard Document not assigned!");
+            Debug.LogError("❌ dashboardDocument is NULL!");
             return;
         }
+
+        Debug.Log($"Dashboard active: {dashboardDocument.gameObject.activeInHierarchy}");
 
         var root = dashboardDocument.rootVisualElement;
         if (root == null)
         {
-            Debug.LogError("root is NULL! Dashboard UXML may not be loaded.");
+            Debug.LogError("❌ Dashboard root is NULL!");
             return;
         }
-        // Текущие значения
+
+        root.style.display = DisplayStyle.Flex;
+
         tempoValue = root.Q<Label>("TempoValue");
         strokeValue = root.Q<Label>("StrokeValue");
         speedValue = root.Q<Label>("SpeedValue");
-
-        // Предыдущие значения
         tempoPrevValue = root.Q<Label>("TempoPrevValue");
         strokePrevValue = root.Q<Label>("StrokePrevValue");
         speedPrevValue = root.Q<Label>("SpeedPrevValue");
-
-        // Стрелки
         tempoArrow = root.Q<Label>("TempoArrow");
         strokeArrow = root.Q<Label>("StrokeArrow");
         speedArrow = root.Q<Label>("SpeedArrow");
 
-        // Инициализация предыдущих значений
+        Debug.Log($"TempoValue found: {tempoValue != null}");
+        Debug.Log($"StrokeValue found: {strokeValue != null}");
+        Debug.Log($"SpeedValue found: {speedValue != null}");
+
+        if (tempoValue != null) tempoValue.text = "0.0с";
+        if (strokeValue != null) strokeValue.text = "0";
+        if (speedValue != null) speedValue.text = "0.0м/с";
+
         previousStrokeRate = standardTempo;
         previousStrokeLength = standardStrokeLength;
         previousSpeed = standardSpeed;
@@ -144,6 +148,8 @@ public class UIToolkitManager : MonoBehaviour
         root.Q<Button>("LeftArrow")?.RegisterCallback<ClickEvent>(_ => OnLeftArrowClick());
         root.Q<Button>("RightArrow")?.RegisterCallback<ClickEvent>(_ => OnRightArrowClick());
         root.Q<Button>("StartTrainingButton")?.RegisterCallback<ClickEvent>(_ => OnStartTraining());
+        root.Q<Button>("ChartLeftArrow")?.RegisterCallback<ClickEvent>(_ => OnChartLeftClick());
+        root.Q<Button>("ChartRightArrow")?.RegisterCallback<ClickEvent>(_ => OnChartRightClick());
     }
 
     private void SetupCursor()
@@ -154,41 +160,50 @@ public class UIToolkitManager : MonoBehaviour
 
     private void SetupGraph()
     {
-        if (routeScreenDocument == null) return;
-        var root = routeScreenDocument.rootVisualElement;
-        var chartArea = root.Q<VisualElement>("ChartArea");
-
-        if (chartArea != null)
+        if (routeScreenDocument == null)
         {
-            var graphController = new GraphController(chartArea);
-            graphController.OnPrevPeriod += () => Debug.Log("Previous period");
-            graphController.OnNextPeriod += () => Debug.Log("Next period");
+            Debug.LogWarning("RouteScreenDocument is null, graph not setup");
+            return;
         }
-    }
 
-    // ========== Обновление дашборда ==========
+        var root = routeScreenDocument.rootVisualElement;
+        if (root == null)
+        {
+            Debug.LogWarning("RouteScreen root is null, graph not setup");
+            return;
+        }
+
+        var chartArea = root.Q<VisualElement>("ChartArea");
+        if (chartArea == null)
+        {
+            Debug.LogWarning("ChartArea not found in UXML!");
+            return;
+        }
+
+        graphController = new GraphController(chartArea);
+        graphController.LoadTestData();
+
+        graphController.OnPrevPeriod += () => Debug.Log("Previous period clicked");
+        graphController.OnNextPeriod += () => Debug.Log("Next period clicked");
+
+        Debug.Log("Graph setup complete");
+    }
 
     private void UpdateDashboard(float strokeRate, float strokeLength, float speed)
     {
-        // Обновляем текущие значения
         if (tempoValue != null) tempoValue.text = $"{strokeRate:F1}с";
         if (strokeValue != null) strokeValue.text = $"{strokeLength:F0}";
         if (speedValue != null) speedValue.text = $"{speed:F1}м/с";
 
-        // Обновляем каждую метрику с её правилами
         UpdateTempoMetric(strokeRate);
         UpdateStrokeMetric(strokeLength);
         UpdateSpeedMetric(speed);
 
-        // Сохраняем текущие значения как предыдущие для следующего обновления
         previousStrokeRate = strokeRate;
         previousStrokeLength = strokeLength;
         previousSpeed = speed;
     }
 
-    /// <summary>
-    /// Темп (500м): зеленый если МЕНЬШЕ стандарта (быстрее), красный если БОЛЬШЕ (медленнее)
-    /// </summary>
     private void UpdateTempoMetric(float currentValue)
     {
         if (tempoPrevValue != null)
@@ -212,9 +227,6 @@ public class UIToolkitManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Длина гребка: зеленый если БОЛЬШЕ стандарта (длиннее), красный если МЕНЬШЕ (короче)
-    /// </summary>
     private void UpdateStrokeMetric(float currentValue)
     {
         if (strokePrevValue != null)
@@ -238,9 +250,6 @@ public class UIToolkitManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Скорость: зеленый если БОЛЬШЕ стандарта (быстрее), красный если МЕНЬШЕ (медленнее)
-    /// </summary>
     private void UpdateSpeedMetric(float currentValue)
     {
         if (speedPrevValue != null)
@@ -264,7 +273,49 @@ public class UIToolkitManager : MonoBehaviour
         }
     }
 
-    // ========== Таблица рекордов ==========
+    private void OnChartLeftClick()
+    {
+        currentGraphType--;
+        if (currentGraphType < 0) currentGraphType = 2;
+        Debug.Log($"Switch to graph: {GetGraphName()}");
+        UpdateGraphByType();
+    }
+
+    private void OnChartRightClick()
+    {
+        currentGraphType++;
+        if (currentGraphType > 2) currentGraphType = 0;
+        Debug.Log($"Switch to graph: {GetGraphName()}");
+        UpdateGraphByType();
+    }
+
+    private string GetGraphName()
+    {
+        return currentGraphType == 0 ? "Скорость (м/с)" :
+               currentGraphType == 1 ? "Темп (греб/мин)" : "Длина гребка (м)";
+    }
+
+    private void UpdateGraphByType()
+    {
+        if (graphController == null) return;
+
+        List<(float time, float value)> testData;
+
+        if (currentGraphType == 0) // Скорость
+        {
+            testData = new List<(float, float)> { (0, 3.2f), (1, 3.8f), (2, 4.2f), (3, 4.0f), (4, 4.5f) };
+        }
+        else if (currentGraphType == 1) // Темп
+        {
+            testData = new List<(float, float)> { (0, 55f), (1, 58f), (2, 60f), (3, 57f), (4, 59f) };
+        }
+        else // Длина гребка
+        {
+            testData = new List<(float, float)> { (0, 110f), (1, 115f), (2, 120f), (3, 118f), (4, 122f) };
+        }
+
+        graphController.UpdateGraph(testData);
+    }
 
     private void LoadRatingData()
     {
@@ -282,13 +333,9 @@ public class UIToolkitManager : MonoBehaviour
     private void UpdateRatingTable(List<RatingRecord> records)
     {
         if (statsList == null) return;
-
         statsList.Clear();
-
         foreach (var record in records)
-        {
             statsList.Add(CreateRatingRow(record));
-        }
     }
 
     private VisualElement CreateRatingRow(RatingRecord record)
@@ -315,49 +362,80 @@ public class UIToolkitManager : MonoBehaviour
         return row;
     }
 
-    private void OnFullTableClick()
+    private void OnFullTableClick() => Debug.Log("Full table button clicked");
+    private void OnLeftArrowClick() => Debug.Log("Left arrow clicked");
+    private void OnRightArrowClick() => Debug.Log("Right arrow clicked");
+    private void OnStartTraining()
     {
-        Debug.Log("Full table button clicked");
+        Debug.Log("Start training button clicked");
+
+        // Скрываем RouteScreen
+        if (routeScreenDocument != null)
+            routeScreenDocument.rootVisualElement.style.display = DisplayStyle.None;
+
+        // Здесь должна быть логика включения камер
+        // В зависимости от роли (спортсмен/тренер)
+
+        // Пример: включаем XR Origin для спортсмена
+        if (athleteSystem != null)
+            athleteSystem.SetActive(true);
+
+        // Если нужно показать дашборд для тренера
+        if (dashboardDocument != null && selectedRole != "athlete")
+            dashboardDocument.rootVisualElement.style.display = DisplayStyle.Flex;
+
+        // Отключаем курсор для VR
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
-    // ========== Карусель ==========
-
-    private void OnLeftArrowClick()
+    private List<RatingRecord> GetTestRatingRecords()
     {
-        if (routes == null || routes.Count == 0) return;
-        currentRouteIndex--;
-        if (currentRouteIndex < 0) currentRouteIndex = routes.Count - 1;
-        UpdateCarousel(currentRouteIndex);
-        carouselDataProvider?.SelectRoute(routes[currentRouteIndex].Id);
+        return new List<RatingRecord>
+        {
+            new RatingRecord(1, "Александр Рудсков", "10:32"),
+            new RatingRecord(2, "Николай Валов", "11:15"),
+            new RatingRecord(3, "Станислав Антипов", "12:48"),
+            new RatingRecord(4, "Игорь Горемыка", "13:22"),
+            new RatingRecord(5, "Дмитрий Петров", "14:05")
+        };
     }
 
-    private void OnRightArrowClick()
+    private List<RouteData> GetTestRoutes()
     {
-        if (routes == null || routes.Count == 0) return;
-        currentRouteIndex++;
-        if (currentRouteIndex >= routes.Count) currentRouteIndex = 0;
-        UpdateCarousel(currentRouteIndex);
-        carouselDataProvider?.SelectRoute(routes[currentRouteIndex].Id);
+        return new List<RouteData>
+        {
+            new RouteData
+            {
+                Id = 1,
+                Name = "Берёзовая Роща",
+                ImagePath = "",
+                Description = "Трасса 'Берёзовая Роща' — 8 км по медленному течению",
+                Length = "8 км",
+                Difficulty = "средняя",
+                WaterType = "медленное течение"
+            },
+            new RouteData
+            {
+                Id = 2,
+                Name = "Горная река",
+                ImagePath = "",
+                Description = "Экстремальный маршрут с порогами III-IV категории",
+                Length = "12 км",
+                Difficulty = "высокая",
+                WaterType = "бурное течение"
+            }
+        };
     }
 
     private void UpdateCarousel(int index)
     {
         if (routes == null || index >= routes.Count) return;
-
         var route = routes[index];
         var root = routeScreenDocument.rootVisualElement;
 
-        // Обновляем изображение
-        var routeImage = root.Q<VisualElement>("RouteImage");
-        if (routeImage != null && !string.IsNullOrEmpty(route.ImagePath))
-        {
-            Debug.Log($"Update route image: {route.ImagePath}");
-        }
-
-        // Обновляем описание
         var descText = root.Q<Label>("RouteDescText");
-        if (descText != null)
-            descText.text = route.Description;
+        if (descText != null) descText.text = route.Description;
 
         var detailsLabel = root.Q<Label>("RouteDetails");
         if (detailsLabel != null)
@@ -382,65 +460,6 @@ public class UIToolkitManager : MonoBehaviour
                 dot.RemoveFromClassList("active");
             dotIndex++;
         }
-    }
-
-    // ========== Кнопка старта ==========
-
-    private void OnStartTraining()
-    {
-        Debug.Log("Start training button clicked");
-
-        // Скрываем UI экраны
-        if (routeScreenDocument != null)
-            routeScreenDocument.rootVisualElement.style.display = DisplayStyle.None;
-
-        if (dashboardDocument != null)
-            dashboardDocument.rootVisualElement.style.display = DisplayStyle.None;
-
-        // Здесь будет логика включения камер в зависимости от роли
-        // if (selectedRole == "athlete") athleteSystem.SetActive(true);
-        // else coachSystem.SetActive(true);
-    }
-
-    // ========== Тестовые данные ==========
-
-    private List<RatingRecord> GetTestRatingRecords()
-    {
-        return new List<RatingRecord>
-        {
-            new RatingRecord(1, "Александр Рудсков", "10:32"),
-            new RatingRecord(2, "Николай Валов", "11:15"),
-            new RatingRecord(3, "Станислав Антипов", "12:48"),
-            new RatingRecord(4, "Игорь Горемыка", "13:22"),
-            new RatingRecord(5, "Дмитрий Петров", "14:05")
-        };
-    }
-
-    private List<RouteData> GetTestRoutes()
-    {
-        return new List<RouteData>
-        {
-            new RouteData
-            {
-                Id = 1,
-                Name = "Берёзовая Роща",
-                ImagePath = "Assets/UI/Images/route1.png",
-                Description = "Трасса 'Берёзовая Роща' — 8 км по медленному течению с порогами I–II; проходит через берёзовые леса и живописные заливки. Время прохождения 3–4 часа.",
-                Length = "8 км",
-                Difficulty = "средняя",
-                WaterType = "медленное течение"
-            },
-            new RouteData
-            {
-                Id = 2,
-                Name = "Горная река",
-                ImagePath = "Assets/UI/Images/route2.png",
-                Description = "Экстремальный маршрут с порогами III-IV категории. Требует хорошей подготовки и снаряжения.",
-                Length = "12 км",
-                Difficulty = "высокая",
-                WaterType = "бурное течение"
-            }
-        };
     }
 
     private void OnDestroy()

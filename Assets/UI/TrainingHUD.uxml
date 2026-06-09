@@ -1,38 +1,66 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/UI%20Toolkit/UnityThemes/TrainingHUD.uss?fileID=7433441132597879392&amp;guid=4d2359946529a9b43a3cbc9a83cdbe5a&amp;type=3#TrainingHUD"/>
+    <Style src="project://database/Assets/UI%20Toolkit/UnityThemes/TrainingHUD.uss?fileID=7433441132597879392&amp;guid=4d2359946529a9b43a3cbc9a83cdbe5a&amp;type=3"/>
     <ui:VisualElement class="hud-root">
-        <ui:VisualElement class="top-metrics">
-            <ui:VisualElement class="metric-card pace-card">
-                <ui:Label text="Темп (500м)" class="metric-title"/>
-                <ui:VisualElement class="metric-row">
-                    <ui:Label name="TempoValue" text="4.1с" class="metric-value"/>
-                    <ui:VisualElement class="value-group">
-                        <ui:Label name="TempoPrevValue" text="3.4с" class="metric-value previous-value"/>
-                        <ui:Label name="TempoArrow" text="▲" class="green-arrow"/>
+        <ui:VisualElement class="left-panel">
+            <ui:VisualElement class="control-panel" style="flex-direction: column;">
+                <ui:Label text="Скорость течения" class="control-title"/>
+                <ui:VisualElement class="slider-row">
+                    <ui:Slider name="FlowSpeedSlider" low-value="0" high-value="20" value="15" class="custom-slider" style="width: 340px;"/>
+                    <ui:Label name="FlowSpeedValue" text="15 м/с" class="control-value"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="control-panel">
+                <ui:Label text="Направление течения" class="control-title"/>
+                <ui:VisualElement class="slider-row">
+                    <ui:Slider name="FlowSpeedSlider" low-value="0" high-value="20" value="15" class="custom-slider" style="width: 340px;"/>
+                    <ui:Label name="FlowDirectionValue" text="30°" class="control-value"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement class="center-panel">
+            <ui:VisualElement class="top-metrics">
+                <ui:VisualElement class="metric-card pace-card">
+                    <ui:Label text="Темп (500м)" class="metric-title"/>
+                    <ui:VisualElement class="metric-row">
+                        <ui:Label name="TempoValue" text="4.1с" class="metric-value"/>
+                        <ui:VisualElement class="value-group">
+                            <ui:Label name="TempoPrevValue" text="3.4с" class="metric-value previous-value"/>
+                            <ui:Label name="TempoArrow" text="▲" class="green-arrow"/>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement class="metric-card stroke-card">
+                    <ui:Label text="Длина гребка" class="metric-title"/>
+                    <ui:VisualElement class="metric-row">
+                        <ui:Label name="StrokeValue" text="130" class="metric-value"/>
+                        <ui:VisualElement class="value-group">
+                            <ui:Label name="StrokePrevValue" text="124" class="metric-value previous-value"/>
+                            <ui:Label name="StrokeArrow" text="▼" class="red-arrow"/>
+                        </ui:VisualElement>
                     </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>
-            <ui:VisualElement class="metric-card stroke-card">
-                <ui:Label text="Длина гребка" class="metric-title"/>
-                <ui:VisualElement class="metric-row">
-                    <ui:Label name="StrokeValue" text="130" class="metric-value"/>
-                    <ui:VisualElement class="value-group">
-                        <ui:Label name="StrokePrevValue" text="124" class="metric-value previous-value"/>
-                        <ui:Label name="StrokeArrow" text="▼" class="red-arrow"/>
+            <ui:VisualElement class="bottom-metrics">
+                <ui:VisualElement class="speed-panel">
+                    <ui:VisualElement class="speed-row">
+                        <ui:Label text="Скорость" class="speed-title"/>
+                        <ui:Label name="SpeedValue" text="3.8м/с" class="speed-value"/>
+                        <ui:VisualElement class="value-group">
+                            <ui:Label name="SpeedPrevValue" text="4.4м/с" class="speed-value previous-value"/>
+                            <ui:Label name="SpeedArrow" text="▲" class="green-arrow"/>
+                        </ui:VisualElement>
                     </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement class="speed-panel">
-            <ui:VisualElement class="speed-row">
-                <ui:Label text="Скорость" class="speed-title"/>
-                <ui:Label name="SpeedValue" text="3.8м/с" class="speed-value"/>
-                <ui:VisualElement class="value-group">
-                    <ui:Label name="SpeedPrevValue" text="4.4м/с" class="speed-value previous-value"/>
-                    <ui:Label name="SpeedArrow" text="▲" class="green-arrow"/>
-                </ui:VisualElement>
-            </ui:VisualElement>
+        <ui:VisualElement class="right-panel">
+            <ui:Button name="SunnyButton" class="weather-button" style="border-bottom-right-radius: 0; border-top-right-radius: 0;">
+                <ui:Label text="Солнечно" class="weather-label"/>
+            </ui:Button>
+            <ui:Button name="RainyButton" class="weather-button" style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
+                <ui:Label text="Дождливо" class="weather-label"/>
+            </ui:Button>
         </ui:VisualElement>
-        <ui:Button name="SettingsButton" class="settings-button" style="background-color: rgba(188, 188, 188, 0);"/>
+        <ui:Button name="SettingsButton" text="" class="settings-button"/>
     </ui:VisualElement>
 </ui:UXML>

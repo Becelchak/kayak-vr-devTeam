@@ -1,18 +1,27 @@
-/* TrainingHUD.uss - Дашборд для отображения метрик */
-
 .hud-root {
     flex-grow: 1;
     position: relative;
 }
 
-/* ---------- TOP METRICS ---------- */
+.center-panel {
+    width: 600px;
+    height: 1000px;
+    margin: 40px auto;
+}
 
 .top-metrics {
-    position: absolute;
-    top: 40px;
-    left: 50%;
-    translate: -50% 0;
+    width: 600px;
+    height: 150px;
     flex-direction: row;
+    justify-content: center;
+    margin: 0 auto 750px;
+}
+
+.bottom-metrics {
+    width: 600px;
+    height: 150px;
+    flex-direction: row;
+    justify-content: center;
 }
 
 .metric-card {
@@ -36,11 +45,8 @@
 }
 
 .metric-title {
-    font-family: "Roboto";
     font-size: 18px;
-    -unity-font-weight: 400;  /* Regular = 400 */
-    -unity-line-height: 1.4;  /* 140% = 1.4 */
-    letter-spacing: 0px;
+    -unity-font-style: bold;
     -unity-text-align: middle-center;
 }
 
@@ -52,15 +58,10 @@
 }
 
 .metric-value {
-    font-family: "Roboto";
     font-size: 32px;
-    -unity-font-weight: 500;  /* Regular = 400 */
-    -unity-line-height: 1.4;  /* 140% = 1.4 */
-    letter-spacing: 0px;
-    -unity-text-align: middle-center;
+    -unity-font-style: bold;
     color: rgb(20, 20, 20);
 }
-
 
 .metric-big-value {
     -unity-text-align: middle-center;
@@ -76,25 +77,19 @@
 }
 
 .green-arrow {
-    margin-left: 1px;
+    margin-left: 6px;
     color: rgb(76, 190, 76);
     font-size: 20px;
 }
 
 .red-arrow {
-    margin-left: 1px;
+    margin-left: 6px;
     color: rgb(220, 40, 40);
     font-size: 20px;
 }
 
-/* ---------- SPEED PANEL ---------- */
-
 .speed-panel {
-    position: absolute;
-    bottom: 60px;
-    left: 50%;
-    translate: -50% 0;
-    width: 450px;
+    width: 500px;
     height: 120px;
     padding-left: 12px;
     padding-right: 12px;
@@ -106,28 +101,17 @@
 .speed-row {
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
 }
 
 .speed-title {
-    font-family: "Roboto";
     font-size: 32px;
-    -unity-font-weight: 500;  /* Regular = 400 */
-    -unity-line-height: 1.4;  /* 140% = 1.4 */
-    letter-spacing: 1%;
-    -unity-text-align: middle-center;
-
-    color: rgb(20, 20, 20);
+    -unity-font-style: bold;
 }
 
 .speed-value {
-    font-family: "Roboto";
     font-size: 32px;
-    -unity-font-weight: 500;  /* Regular = 400 */
-    -unity-line-height: 1.4;  /* 140% = 1.4 */
-    letter-spacing: 1%;
-    -unity-text-align: middle-center;
-
-    color: rgb(20, 20, 20);
+    -unity-font-style: bold;
 }
 
 .speed-value.previous-value {
@@ -135,18 +119,98 @@
     font-size: 25px;
 }
 
-/* ---------- SETTINGS BUTTON ---------- */
-
 .settings-button {
     position: absolute;
     right: 60px;
     bottom: 60px;
     width: 60px;
     height: 60px;
-    border: none;
-    background-image: url("project://database/Assets/UI/Icons/settings-live.png");
+    background-image: url("project://database/Assets/UI/Icons/settings-live.png?fileID=21300000&guid=94d76288b1070db42947ca9a217717b3&type=3#settings-live");
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    border-width: 0;
+}
+
+.left-panel {
+    position: absolute;
+    left: 20px;
+    margin-top: 40px;
+    margin-left: 40px;
+    flex-direction: column;
+    width: 440px;
+    height: 150px;
+}
+
+.control-panel {
+    background-color: rgb(215, 227, 245);
+    border-radius: 10px;
+    padding: 5px 18px;
+    width: 440px;
+    height: 60px;
+    margin-bottom: 15px;
+}
+
+.control-title {
+    font-size: 14px;
+    -unity-font-style: bold;
+    color: rgb(0, 0, 0);
+}
+
+.slider-row {
+    width: 360px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.control-value {
+    font-size: 14px;
+    -unity-font-style: bold;
+    color: rgb(0, 0, 0);
+    height: 35px;
+}
+
+.right-panel {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    margin-top: -30px;
+    width: 500px;
+    height: 55px;
+    flex-direction: row;
+    border-radius: 10px;
+}
+
+.weather-label {
+    font-size: 14px;
+    color: rgb(40, 40, 40);
+    -unity-font-style: bold;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.custom-slider {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+.custom-slider .unity-base-slider__track {
+    border-radius: 8px;
+    height: 8px;
+    margin-top: -4px;
+}
+
+.custom-slider .unity-base-slider__track-fill {
+    background-color: rgb(17, 104, 0);
+    border-radius: 8px;
+}
+
+.custom-slider .unity-base-slider__drag-container .unity-base-slider__dragger {
+    width: 22px;
+    height: 22px;
+    border-radius: 11px;
+    background-color: rgb(17, 104, 0);
+    border-width: 4px;
+    border-color: white;
+    margin-top: -11px;
 }
