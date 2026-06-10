@@ -37,6 +37,8 @@ public class RaceService : BaseService, IRaceService
     private GameObject currentResultWindow;
     private Rigidbody kayakRigidbody;
 
+    private List<RaceStatistics> completedRaces = new List<RaceStatistics>();
+
     private void Start()
     {
         var kayak = GameObject.FindGameObjectWithTag("Player");
@@ -88,6 +90,11 @@ public class RaceService : BaseService, IRaceService
         speeds.Add(speed);
     }
 
+    public List<RaceStatistics> GetAllRaces()
+    {
+        return completedRaces;
+    }
+
     private void OnStrokeEnded()
     {
         if (!isRaceActive) return;
@@ -113,6 +120,9 @@ public class RaceService : BaseService, IRaceService
             metrics.OnMetricsUpdated -= OnMetricsUpdated;
             metrics.OnStrokeEnded -= OnStrokeEnded;
         }
+
+        // Сохраняем в историю
+        completedRaces.Add(currentStats);
 
         OnRaceFinished?.Invoke(currentStats);
         ShowRaceResults();
@@ -178,6 +188,14 @@ public class RaceService : BaseService, IRaceService
         float max = -1;
         foreach (var v in list) if (v > max) max = v;
         return max;
+    }
+    public RaceStatistics GetCurrentStatistics()
+    {
+        if (currentStats == null)
+        {
+            return new RaceStatistics(); // пустая статистика, если гонка не завершена
+        }
+        return currentStats;
     }
 
     protected override Type GetServiceType() => typeof(IRaceService);

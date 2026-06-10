@@ -1,0 +1,78 @@
+.screen-overlay {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.75); /* 35% затемнения */
+    backdrop-filter: blur(4px)
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.modal-window {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 25px;
+    width: 650px;
+    height: 595px;
+    overflow: hidden;
+    padding-bottom: 20px;
+}
+
+.modal-title {
+    font-size: 34px;
+    -unity-font-style: bold;
+    color: rgb(0, 0, 0);
+    -unity-text-align: middle-center;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgb(224, 224, 224);
+}
+
+.stat-row {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px 25px;
+}
+
+.bg-light {
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.bg-dark {
+    background-color: rgba(235, 235, 235, 0.7);
+}
+
+.stat-label {
+    font-size: 25px;
+    color: rgb(0, 0, 0);
+    -unity-font-style: light;
+}
+
+.stat-value {
+    font-size: 25px;
+    color: rgb(0, 0, 0);
+    -unity-text-align: middle-right;
+    -unity-font-style: light;
+}
+
+.button-container {
+    padding: 15px 20px 10px 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.close-button {
+    background-color: rgb(76, 175, 80);
+    color: white;
+    font-size: 16px;
+    padding: 8px 20px;
+    border-radius: 8px;
+    border-width: 0;
+}
+
+.close-button:hover {
+    background-color: rgb(69, 160, 73);
+}

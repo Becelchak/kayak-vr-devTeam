@@ -36,6 +36,7 @@
     border-radius: 28px;
     background-color: rgba(255, 255, 255, 0.82);
     justify-content: space-between;
+    align-items: center;
     border-width: 1px;
     border-color: rgba(255, 255, 255, 0.4);
 }
@@ -52,7 +53,6 @@
 
 .metric-row {
     flex-direction: row;
-    justify-content: space-between;
     align-items: center;
     flex-grow: 1;
 }
@@ -101,12 +101,12 @@
 .speed-row {
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
 }
 
 .speed-title {
     font-size: 32px;
     -unity-font-style: bold;
+    margin-right: 100px;
 }
 
 .speed-value {
@@ -133,9 +133,8 @@
 
 .left-panel {
     position: absolute;
-    left: 20px;
-    margin-top: 40px;
-    margin-left: 40px;
+    left: 80px;
+    top: 40px;
     flex-direction: column;
     width: 440px;
     height: 150px;
@@ -172,13 +171,25 @@
 
 .right-panel {
     position: absolute;
-    right: 20px;
-    top: 50%;
-    margin-top: -30px;
-    width: 500px;
+    right: 80px;
+    top: 40px;
+    width: 420px;
     height: 55px;
     flex-direction: row;
-    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(225, 233, 240, 1), rgba(17, 104, 0, 1));
+    overflow: hidden;
+    border-radius: 16px;
+}
+
+.weather-button {
+    width: 210px;
+    height: 55px;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    /*background-color: rgba(255, 255, 255, 0);
+    transition: background-color 0.2s ease;*/
 }
 
 .weather-label {
@@ -189,18 +200,26 @@
     margin-right: 10px;
 }
 
+.weather-button.sunny-button.active-sunny {
+    background-color: rgba(255, 215, 0, 0.8);
+}
+
+.weather-button.rainy-button.active-rainy {
+    background-color: rgba(79, 195, 247, 0.8);
+}
+
 .custom-slider {
     flex-grow: 1;
     margin-right: 10px;
 }
 
-.custom-slider .unity-base-slider__track {
+.custom-slider > .unity-base-slider__track {
+    background-color: rgb(180, 180, 180);
     border-radius: 8px;
-    height: 8px;
-    margin-top: -4px;
+    height: 6px;
 }
 
-.custom-slider .unity-base-slider__track-fill {
+.custom-slider > .unity-base-slider__track-fill {
     background-color: rgb(17, 104, 0);
     border-radius: 8px;
 }
@@ -212,5 +231,35 @@
     background-color: rgb(17, 104, 0);
     border-width: 4px;
     border-color: white;
-    margin-top: -11px;
+}
+
+/* Трек (полоска) */
+.custom-slider .unity-base-slider__track {
+    background-color: rgba(180, 180, 180, 1);
+    border-radius: 8px;
+    height: 6px;
+}
+
+/* Зелёная заливка (слева от ползунка) */
+.custom-slider .unity-base-slider__track-fill {
+    background-color: rgb(17, 104, 0);
+    border-radius: 8px;
+}
+
+/* Круглая ручка */
+.custom-slider .unity-base-slider__dragger {
+    width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    background-color: rgb(17, 104, 0);
+    border-width: 2px;
+    border-color: white;
+}
+
+.right-panel.weather-sunny {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.8), rgba(255, 165, 0, 0.8));
+}
+
+.right-panel.weather-rainy {
+    background: linear-gradient(135deg, rgba(79, 195, 247, 0.8), rgba(2, 136, 209, 0.8));
 }

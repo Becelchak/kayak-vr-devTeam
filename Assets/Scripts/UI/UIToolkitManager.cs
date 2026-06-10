@@ -20,15 +20,13 @@ public class UIToolkitManager : MonoBehaviour
     [SerializeField] private GameObject athleteSystem;
     [SerializeField] private GameObject coachSystem;
 
-    private string selectedRole = "athlete";
+    [Header("Statistics Modal")]
+    [SerializeField] private StatisticsModalController statisticsModal;
 
     // Элементы дашборда
     private Label tempoValue;
     private Label strokeValue;
     private Label speedValue;
-    private Label tempoPrevValue;
-    private Label strokePrevValue;
-    private Label speedPrevValue;
     private Label tempoArrow;
     private Label strokeArrow;
     private Label speedArrow;
@@ -55,19 +53,29 @@ public class UIToolkitManager : MonoBehaviour
     private GraphController graphController;
     private int currentGraphType = 0;
 
+    private bool isAthleteMode;
+
     private void Start()
     {
+        isAthleteMode = false;//Display.displays.Length <= 1;
+        Debug.Log($"Mode: {(isAthleteMode ? "ATHLETE (VR)" : "COACH (PC)")}");
+
         SetupDashboard();
         SetupRatingTable();
         SetupCarousel();
         SetupButtons();
         SetupCursor();
         SetupGraph();
+        SetupWeatherButtons();
+        SetupStatisticsModal();
+        SetupGameStart();
 
         if (metricsCalculator != null)
             metricsCalculator.OnMetricsUpdated += UpdateDashboard;
-        else
-            Debug.LogError("MetricsCalculator is NULL! Assign it in Inspector.");
+
+        var raceService = ServiceLocator.Instance.GetService<IRaceService>();
+        if (raceService != null)
+            raceService.OnRaceFinished += OnRaceFinished;
     }
 
     private void SetupDashboard()
@@ -92,9 +100,6 @@ public class UIToolkitManager : MonoBehaviour
         tempoValue = root.Q<Label>("TempoValue");
         strokeValue = root.Q<Label>("StrokeValue");
         speedValue = root.Q<Label>("SpeedValue");
-        tempoPrevValue = root.Q<Label>("TempoPrevValue");
-        strokePrevValue = root.Q<Label>("StrokePrevValue");
-        speedPrevValue = root.Q<Label>("SpeedPrevValue");
         tempoArrow = root.Q<Label>("TempoArrow");
         strokeArrow = root.Q<Label>("StrokeArrow");
         speedArrow = root.Q<Label>("SpeedArrow");
@@ -154,8 +159,18 @@ public class UIToolkitManager : MonoBehaviour
 
     private void SetupCursor()
     {
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
+        if (isAthleteMode)
+        {
+            // VR режим — курсор скрыт
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+        else
+        {
+            // ПК режим — курсор видим
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
     }
 
     private void SetupGraph()
@@ -181,12 +196,155 @@ public class UIToolkitManager : MonoBehaviour
         }
 
         graphController = new GraphController(chartArea);
-        graphController.LoadTestData();
 
-        graphController.OnPrevPeriod += () => Debug.Log("Previous period clicked");
-        graphController.OnNextPeriod += () => Debug.Log("Next period clicked");
+        // ===== ТЕСТОВЫЕ ДАННЫЕ (активны) =====
+        graphController.LoadTestData("speed");
+
+        // ===== РЕАЛЬНЫЕ ДАННЫЕ (закомментированы) =====
+        // Раскомментировать для работы с реальными данными из RaceService
+        /*
+        var raceService = ServiceLocator.Instance.GetService<IRaceService>();
+        if (raceService != null)
+        {
+            var raceData = ConvertRaceToGraphData(raceService.GetCurrentStatistics());
+            graphController.LoadRealData(raceData, "speed");
+        }
+        */
+
+        graphController.OnPrevPeriod += () => OnGraphPrevPeriod();
+        graphController.OnNextPeriod += () => OnGraphNextPeriod();
 
         Debug.Log("Graph setup complete");
+    }
+
+    // ===== ДЛЯ РЕАЛЬНЫХ ДАННЫХ (закомментировано) =====
+    /*
+    private List<(float time, float value)> ConvertRaceToGraphData(RaceStatistics stats)
+    {
+        if (stats == null) return new List<(float, float)>();
+
+        // Здесь должна быть конвертация данных заезда в точки графика
+        var data = new List<(float, float)>();
+        // TODO: добавить логику конвертации
+        return data;
+    }
+    */
+
+    private void OnGraphPrevPeriod()
+    {
+        currentGraphType--;
+        if (currentGraphType < 0) currentGraphType = 2;
+        UpdateGraphByType();
+        Debug.Log($"Previous period clicked, switch to: {GetGraphName()}");
+    }
+
+    private void OnGraphNextPeriod()
+    {
+        currentGraphType++;
+        if (currentGraphType > 2) currentGraphType = 0;
+        UpdateGraphByType();
+        Debug.Log($"Next period clicked, switch to: {GetGraphName()}");
+    }
+
+    private void SetupWeatherButtons()
+    {
+        if (dashboardDocument == null) return;
+        var root = dashboardDocument.rootVisualElement;
+
+        var weatherContainer = root.Q<VisualElement>("right-panel"); // контейнер с кнопками
+        var sunnyBtn = weatherContainer?.Q<Button>("SunnyButton");
+        var rainyBtn = weatherContainer?.Q<Button>("RainyButton");
+
+        if (sunnyBtn == null || rainyBtn == null)
+        {
+            Debug.LogWarning("Weather buttons not found!");
+            return;
+        }
+
+        var weatherService = ServiceLocator.Instance.GetService<IWeatherService>();
+        if (weatherService == null)
+        {
+            Debug.LogWarning("WeatherService not found!");
+            return;
+        }
+
+        // Устанавливаем начальное состояние
+        UpdateWeatherUI(weatherService.IsRaining, sunnyBtn, rainyBtn, weatherContainer);
+
+        sunnyBtn.RegisterCallback<ClickEvent>(_ => {
+            weatherService.SetRain(false);
+            UpdateWeatherUI(false, sunnyBtn, rainyBtn, weatherContainer);
+        });
+
+        rainyBtn.RegisterCallback<ClickEvent>(_ => {
+            weatherService.SetRain(true);
+            UpdateWeatherUI(true, sunnyBtn, rainyBtn, weatherContainer);
+        });
+    }
+
+    private void UpdateWeatherUI(bool isRaining, Button sunnyBtn, Button rainyBtn, VisualElement weatherContainer)
+    {
+        if (isRaining)
+        {
+            sunnyBtn?.RemoveFromClassList("active-sunny");
+            rainyBtn?.AddToClassList("active-rainy");
+            weatherContainer?.RemoveFromClassList("weather-sunny");
+            weatherContainer?.AddToClassList("weather-rainy");
+        }
+        else
+        {
+            sunnyBtn?.AddToClassList("active-sunny");
+            rainyBtn?.RemoveFromClassList("active-rainy");
+            weatherContainer?.RemoveFromClassList("weather-rainy");
+            weatherContainer?.AddToClassList("weather-sunny");
+        }
+    }
+
+    private void SetupStatisticsModal()
+    {
+        if (dashboardDocument == null) return;
+        var root = dashboardDocument.rootVisualElement;
+        var settingsBtn = root.Q<Button>("SettingsButton");
+
+        if (settingsBtn != null && statisticsModal != null)
+        {
+            settingsBtn.RegisterCallback<ClickEvent>(_ => {
+                if (statisticsModal.IsVisible)
+                {
+                    statisticsModal.Hide();
+                    Debug.Log("Statistics modal closed");
+                }
+                else
+                {
+                    var raceService = ServiceLocator.Instance.GetService<IRaceService>();
+                    if (raceService != null)
+                    {
+                        var stats = raceService.GetCurrentStatistics();
+                        statisticsModal.Show(stats);
+                    }
+                    else
+                    {
+                        statisticsModal.Show();
+                    }
+                    Debug.Log("Statistics modal opened");
+                }
+            });
+        }
+    }
+
+    private void SetupGameStart()
+    {
+        var raceService = ServiceLocator.Instance.GetService<IRaceService>();
+        if (raceService != null)
+        {
+            raceService.OnRaceFinished += OnRaceFinished;
+        }
+    }
+
+    private void OnRaceFinished(RaceStatistics stats)
+    {
+        Debug.Log($"Race finished! Time: {stats.totalTime:F1} sec");
+        statisticsModal?.Show(stats);
     }
 
     private void UpdateDashboard(float strokeRate, float strokeLength, float speed)
@@ -206,71 +364,35 @@ public class UIToolkitManager : MonoBehaviour
 
     private void UpdateTempoMetric(float currentValue)
     {
-        if (tempoPrevValue != null)
-            tempoPrevValue.text = $"{previousStrokeRate:F1}с";
+        if (tempoArrow == null) return;
 
-        if (tempoArrow != null)
-        {
-            bool isBetter = currentValue < standardTempo;
-            tempoArrow.text = isBetter ? "▲" : "▼";
-
-            if (isBetter)
-            {
-                tempoArrow.RemoveFromClassList("red-arrow");
-                tempoArrow.AddToClassList("green-arrow");
-            }
-            else
-            {
-                tempoArrow.RemoveFromClassList("green-arrow");
-                tempoArrow.AddToClassList("red-arrow");
-            }
-        }
+        // Темп: улучшение = стало меньше (зелёный ▲)
+        bool isBetter = currentValue < previousStrokeRate;
+        tempoArrow.text = isBetter ? "▲" : "▼";
+        tempoArrow.RemoveFromClassList(isBetter ? "red-arrow" : "green-arrow");
+        tempoArrow.AddToClassList(isBetter ? "green-arrow" : "red-arrow");
     }
 
     private void UpdateStrokeMetric(float currentValue)
     {
-        if (strokePrevValue != null)
-            strokePrevValue.text = $"{previousStrokeLength:F0}";
+        if (strokeArrow == null) return;
 
-        if (strokeArrow != null)
-        {
-            bool isBetter = currentValue > standardStrokeLength;
-            strokeArrow.text = isBetter ? "▲" : "▼";
-
-            if (isBetter)
-            {
-                strokeArrow.RemoveFromClassList("red-arrow");
-                strokeArrow.AddToClassList("green-arrow");
-            }
-            else
-            {
-                strokeArrow.RemoveFromClassList("green-arrow");
-                strokeArrow.AddToClassList("red-arrow");
-            }
-        }
+        // Длина гребка: улучшение = стало больше (зелёный ▲)
+        bool isBetter = currentValue > previousStrokeLength;
+        strokeArrow.text = isBetter ? "▲" : "▼";
+        strokeArrow.RemoveFromClassList(isBetter ? "red-arrow" : "green-arrow");
+        strokeArrow.AddToClassList(isBetter ? "green-arrow" : "red-arrow");
     }
 
     private void UpdateSpeedMetric(float currentValue)
     {
-        if (speedPrevValue != null)
-            speedPrevValue.text = $"{previousSpeed:F1}м/с";
+        if (speedArrow == null) return;
 
-        if (speedArrow != null)
-        {
-            bool isBetter = currentValue > standardSpeed;
-            speedArrow.text = isBetter ? "▲" : "▼";
-
-            if (isBetter)
-            {
-                speedArrow.RemoveFromClassList("red-arrow");
-                speedArrow.AddToClassList("green-arrow");
-            }
-            else
-            {
-                speedArrow.RemoveFromClassList("green-arrow");
-                speedArrow.AddToClassList("red-arrow");
-            }
-        }
+        // Скорость: улучшение = стало больше (зелёный ▲)
+        bool isBetter = currentValue > previousSpeed;
+        speedArrow.text = isBetter ? "▲" : "▼";
+        speedArrow.RemoveFromClassList(isBetter ? "red-arrow" : "green-arrow");
+        speedArrow.AddToClassList(isBetter ? "green-arrow" : "red-arrow");
     }
 
     private void OnChartLeftClick()
@@ -291,43 +413,69 @@ public class UIToolkitManager : MonoBehaviour
 
     private string GetGraphName()
     {
-        return currentGraphType == 0 ? "Скорость (м/с)" :
-               currentGraphType == 1 ? "Темп (греб/мин)" : "Длина гребка (м)";
+        switch (currentGraphType)
+        {
+            case 0: return "Скорость (м/с)";
+            case 1: return "Темп (греб/мин)";
+            case 2: return "Длина гребка (см)";
+            default: return "График";
+        }
     }
 
     private void UpdateGraphByType()
     {
         if (graphController == null) return;
 
-        List<(float time, float value)> testData;
-
-        if (currentGraphType == 0) // Скорость
+        switch (currentGraphType)
         {
-            testData = new List<(float, float)> { (0, 3.2f), (1, 3.8f), (2, 4.2f), (3, 4.0f), (4, 4.5f) };
+            case 0:
+                graphController.LoadTestData("speed");
+                break;
+            case 1:
+                graphController.LoadTestData("tempo");
+                break;
+            case 2:
+                graphController.LoadTestData("stroke");
+                break;
         }
-        else if (currentGraphType == 1) // Темп
-        {
-            testData = new List<(float, float)> { (0, 55f), (1, 58f), (2, 60f), (3, 57f), (4, 59f) };
-        }
-        else // Длина гребка
-        {
-            testData = new List<(float, float)> { (0, 110f), (1, 115f), (2, 120f), (3, 118f), (4, 122f) };
-        }
-
-        graphController.UpdateGraph(testData);
     }
 
     private void LoadRatingData()
     {
-        if (ratingDataProvider != null)
+        // ===== РЕАЛЬНЫЕ ДАННЫЕ (раскомментировать для работы с RaceService) =====
+        /*
+        var raceService = ServiceLocator.Instance.GetService<IRaceService>();
+        if (raceService != null)
         {
-            var records = ratingDataProvider.GetRatingRecords();
-            UpdateRatingTable(records);
+            var races = raceService.GetAllRaces();
+            if (races != null && races.Count > 0)
+            {
+                var records = new List<RatingRecord>();
+                for (int i = 0; i < races.Count && i < 10; i++)
+                {
+                    var race = races[i];
+                    records.Add(new RatingRecord(
+                        i + 1,
+                        $"Заезд {i + 1}",
+                        FormatTime(race.totalTime)
+                    ));
+                }
+                UpdateRatingTable(records);
+                return;
+            }
         }
-        else
-        {
-            UpdateRatingTable(GetTestRatingRecords());
-        }
+        */
+
+        // ===== ТЕСТОВЫЕ ДАННЫЕ (активны по умолчанию) =====
+        UpdateRatingTable(GetTestRatingRecords());
+    }
+
+    // Вспомогательный метод для форматирования времени (для реальных данных)
+    private string FormatTime(float seconds)
+    {
+        int minutes = Mathf.FloorToInt(seconds / 60);
+        int secs = Mathf.FloorToInt(seconds % 60);
+        return $"{minutes:00}:{secs:00}";
     }
 
     private void UpdateRatingTable(List<RatingRecord> records)
@@ -365,6 +513,7 @@ public class UIToolkitManager : MonoBehaviour
     private void OnFullTableClick() => Debug.Log("Full table button clicked");
     private void OnLeftArrowClick() => Debug.Log("Left arrow clicked");
     private void OnRightArrowClick() => Debug.Log("Right arrow clicked");
+
     private void OnStartTraining()
     {
         Debug.Log("Start training button clicked");
@@ -373,20 +522,17 @@ public class UIToolkitManager : MonoBehaviour
         if (routeScreenDocument != null)
             routeScreenDocument.rootVisualElement.style.display = DisplayStyle.None;
 
-        // Здесь должна быть логика включения камер
-        // В зависимости от роли (спортсмен/тренер)
+        // Запускаем гонку
+        var raceService = ServiceLocator.Instance.GetService<IRaceService>();
+        if (raceService != null)
+        {
+            raceService.StartRace();
+            Debug.Log("Race started");
+        }
 
-        // Пример: включаем XR Origin для спортсмена
-        if (athleteSystem != null)
-            athleteSystem.SetActive(true);
-
-        // Если нужно показать дашборд для тренера
-        if (dashboardDocument != null && selectedRole != "athlete")
+        // Для ПК (тренер) показываем дашборд
+        if (!isAthleteMode && dashboardDocument != null)
             dashboardDocument.rootVisualElement.style.display = DisplayStyle.Flex;
-
-        // Отключаем курсор для VR
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
     }
 
     private List<RatingRecord> GetTestRatingRecords()
@@ -464,7 +610,23 @@ public class UIToolkitManager : MonoBehaviour
 
     private void OnDestroy()
     {
+        // Отписываемся от MetricsCalculator
         if (metricsCalculator != null)
             metricsCalculator.OnMetricsUpdated -= UpdateDashboard;
+
+        // Безопасная отписка от RaceService
+        try
+        {
+            if (ServiceLocator.Instance != null)
+            {
+                var raceService = ServiceLocator.Instance.GetService<IRaceService>();
+                if (raceService != null)
+                    raceService.OnRaceFinished -= OnRaceFinished;
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log($"Could not unsubscribe from RaceService: {e.Message}");
+        }
     }
 }

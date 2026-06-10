@@ -1,0 +1,36 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/UnityThemes/StatisticsModal.uss?fileID=7433441132597879392&amp;guid=03da3c5286d304545b19391eb4f4765b&amp;type=3"/>
+    <ui:VisualElement class="screen-overlay">
+        <ui:VisualElement class="modal-window">
+            <ui:Label text="Статистика" class="modal-title"/>
+            <ui:VisualElement class="stat-row bg-light">
+                <ui:Label text="Время" class="stat-label"/>
+                <ui:Label name="TotalTimeValue" text="0.0 сек" class="stat-value"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="stat-row bg-dark">
+                <ui:Label text="Дистанция" class="stat-label"/>
+                <ui:Label name="DistanceValue" text="0.0 м" class="stat-value"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="stat-row bg-light">
+                <ui:Label text="Средний темп" class="stat-label"/>
+                <ui:Label name="AvgStrokeRateValue" text="0.0 греб/мин" class="stat-value"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="stat-row bg-dark">
+                <ui:Label text="Средняя длина гребка" class="stat-label"/>
+                <ui:Label name="AvgStrokeLengthValue" text="0.0 м" class="stat-value"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="stat-row bg-light">
+                <ui:Label text="Средняя скорость" class="stat-label"/>
+                <ui:Label name="AvgSpeedValue" text="0.0 м/с" class="stat-value"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="stat-row bg-dark">
+                <ui:Label text="Максимальная скорость" class="stat-label"/>
+                <ui:Label name="MaxSpeedValue" text="0.0 м/с" class="stat-value"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="stat-row bg-light">
+                <ui:Label text="Всего гребков" class="stat-label"/>
+                <ui:Label name="TotalStrokesValue" text="0" class="stat-value"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
