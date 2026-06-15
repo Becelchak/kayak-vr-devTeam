@@ -47,7 +47,7 @@ public class WeatherViewModel
         SetSunnyCommand = new RelayCommand(() => SetWeatherMode(WeatherMode.Sunny));
         SetRainyCommand = new RelayCommand(() => SetWeatherMode(WeatherMode.Rainy));
         SetFlowDirectionCommand = new RelayCommand<int>(state => SetFlowDirectionFromService(state));
-        SetFlowSpeedCommand = new RelayCommand<float>(spd => SetFlowDirectionFromService(spd));
+        SetFlowSpeedCommand = new RelayCommand<float>(spd => SetFlowSpeedFromService(spd));
     }
 
     private void ToggleRain()
@@ -69,10 +69,10 @@ public class WeatherViewModel
         OnPropertyChanged(nameof(SetFlowDirectionCommand));
     }
 
-    private void SetFlowDirectionFromService(float speed)
+    private void SetFlowSpeedFromService(float speed)
     {
         weatherService.SetFlowSpeed(speed);
-        OnPropertyChanged(nameof(SetFlowDirectionCommand));
+        OnPropertyChanged(nameof(SetFlowSpeedCommand));
     }
 
     private void OnPropertyChanged(string propName) => PropertyChanged?.Invoke();
