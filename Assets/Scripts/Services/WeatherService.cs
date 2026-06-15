@@ -38,9 +38,27 @@ public class WeatherService : BaseService, IWeatherService
     [Tooltip("Скорость смены погоды")]
     public float transitionSpeed = 0.5f;
 
+    [Header("Lighting")]
+    [Tooltip("Основной источник света (Directional Light)")]
+    [SerializeField] private Light mainLight;
+
+    [Tooltip("Интенсивность света при солнечной погоде")]
+    [SerializeField] private float sunnyLightIntensity = 1f;
+
+    [Tooltip("Интенсивность света при дождливой погоде")]
+    [SerializeField] private float rainyLightIntensity = 0.4f;
+
+    [Tooltip("Цвет света при солнечной погоде")]
+    [SerializeField] private Color sunnyLightColor = Color.white;
+
+    [Tooltip("Цвет света при дождливой погоде")]
+    [SerializeField] private Color rainyLightColor = new Color(0.7f, 0.75f, 0.85f); // холодный серый
+
     [Header("Other")]
     [Tooltip("Родительский объект сплайна течения (IsetSplineRiver)")]
     [SerializeField] private GameObject splitPointParent;
+    [Tooltip("Объект за которым следует партикль дождя")]
+    [SerializeField] private GameObject objectToFollow;
     private ShapeFFT shapeFFTComponent;
 
     [Tooltip("Материал скайбокса")]
@@ -106,6 +124,8 @@ public class WeatherService : BaseService, IWeatherService
     {
         float targetValue = (targetWeather == WeatherMode.Rainy) ? 1f : 0f;
 
+        rainParticleSystem.gameObject.transform.position = objectToFollow.transform.position;
+
         if (!Mathf.Approximately(interpolationProgress, targetValue))
         {
             interpolationProgress = Mathf.MoveTowards(interpolationProgress, targetValue, transitionSpeed * Time.deltaTime);
@@ -132,7 +152,8 @@ public class WeatherService : BaseService, IWeatherService
             Color sunColor = sunnySkybox.GetColor(TintID);
             Color rainColor = rainySkybox.GetColor(TintID);
 
-            // Реализуем плавный переход через изменение параметров
+            // --- Смена скайбоксов ---
+            // Плавный переход через изменение параметров
             if (progress < 0.5f)
             {
                 runtimeSkybox.SetTexture(TexID, sunTex);
@@ -149,6 +170,19 @@ public class WeatherService : BaseService, IWeatherService
                 runtimeSkybox.SetFloat(ExposureID, Mathf.Lerp(0f, rainMaxExposure, localProgress));
                 runtimeSkybox.SetColor(TintID, Color.Lerp(Color.gray, rainColor, localProgress));
             }
+        }
+
+        // --- Интерполяция освещения ---
+        if (mainLight != null)
+        {
+            // Интенсивность
+            float intensity = Mathf.Lerp(sunnyLightIntensity, rainyLightIntensity, progress);
+            mainLight.intensity = intensity;
+
+            // Цвет
+            Color lightColor = Color.Lerp(sunnyLightColor, rainyLightColor, progress);
+            mainLight.color = lightColor;
+
         }
 
         RenderSettings.fogColor = Color.Lerp(sunnyFogColor, rainyFogColor, progress);

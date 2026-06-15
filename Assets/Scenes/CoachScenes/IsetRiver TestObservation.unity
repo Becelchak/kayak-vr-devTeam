@@ -3414,7 +3414,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 545432500}
+  m_Material: {fileID: 1748962923}
   m_Color: {r: 0.93333334, g: 0.90588236, b: 0.90588236, a: 0.69803923}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -3440,47 +3440,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 490975508}
   m_CullTransparentMesh: 1
---- !u!21 &545432500
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: UI/RoundedCorners/RoundedCorners
-  m_Shader: {fileID: 4800000, guid: 0bd2ec5d73751e34a814274a454bec41, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _ColorMask: 15
-    - _Stencil: 0
-    - _StencilComp: 8
-    - _StencilOp: 0
-    - _StencilReadMask: 255
-    - _StencilWriteMask: 255
-    - _UseUIAlphaClip: 0
-    m_Colors:
-    - _OuterUV: {r: 0, g: 0, b: 1, a: 1}
-    - _WidthHeightRadius: {r: 220, g: 30, b: 16, a: 0}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
 --- !u!43 &581054257
 Mesh:
   m_ObjectHideFlags: 0
@@ -7533,16 +7492,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66333f31429477d4197550b040157a27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MetricsUIDisplay
-  tempoText: {fileID: 866631251}
-  strokeLengthText: {fileID: 1963422869}
-  speedText: {fileID: 2104206633}
-  tempoFormat: F1
-  strokeLengthFormat: F2
-  speedFormat: F2
-  increaseColor: {r: 0, g: 1, b: 0, a: 1}
-  decreaseColor: {r: 1, g: 0, b: 0, a: 1}
-  neutralColor: {r: 1, g: 1, b: 1, a: 1}
-  highlightDuration: 0.3
 --- !u!1 &1068676951
 GameObject:
   m_ObjectHideFlags: 0
@@ -10111,6 +10060,7 @@ MonoBehaviour:
   rainyFogDensity: 0.005
   transitionSpeed: 0.5
   splitPointParent: {fileID: 189779029}
+  objectToFollow: {fileID: 1589921639}
 --- !u!114 &1301930192
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10125,7 +10075,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RaceService
   startPoint: {fileID: 1444075127}
   finishPoint: {fileID: 1871614525}
-  raceResultUIPrefab: {fileID: 888649204}
   raceLine: {fileID: 429658567}
   lineMaterial: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!1 &1307157869
@@ -11153,6 +11102,11 @@ MonoBehaviour:
   useBoatVelocity: 1
   leftBladeTip: {fileID: 658577581}
   rightBladeTip: {fileID: 658577580}
+--- !u!1 &1589921639 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4713453387523132176, guid: 38027cc36be5ff647897c16153fa7639, type: 3}
+  m_PrefabInstance: {fileID: 1356947986}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1611899566
 GameObject:
   m_ObjectHideFlags: 0
@@ -11290,7 +11244,7 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
---- !u!21 &1623459045
+--- !u!21 &1623423959
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -11389,7 +11343,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 1623459045}
+  m_Material: {fileID: 1623423959}
   m_Color: {r: 0.8509804, g: 0.8509804, b: 0.8509804, a: 0.23529412}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -11566,6 +11520,47 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!21 &1748962923
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: UI/RoundedCorners/RoundedCorners
+  m_Shader: {fileID: 4800000, guid: 0bd2ec5d73751e34a814274a454bec41, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ColorMask: 15
+    - _Stencil: 0
+    - _StencilComp: 8
+    - _StencilOp: 0
+    - _StencilReadMask: 255
+    - _StencilWriteMask: 255
+    - _UseUIAlphaClip: 0
+    m_Colors:
+    - _OuterUV: {r: 0, g: 0, b: 1, a: 1}
+    - _WidthHeightRadius: {r: 220, g: 30, b: 16, a: 0}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &1830710255
 GameObject:
   m_ObjectHideFlags: 0

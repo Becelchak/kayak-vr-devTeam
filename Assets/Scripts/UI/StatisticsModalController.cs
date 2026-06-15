@@ -1,49 +1,67 @@
-using UnityEngine;
+п»їusing UnityEngine;
 using UnityEngine.UIElements;
 
 public class StatisticsModalController : MonoBehaviour
 {
     private UIDocument uiDocument;
+    public event System.Action OnReset;
     private bool isVisible = false;
 
     private void Awake()
     {
         uiDocument = GetComponent<UIDocument>();
-        if (uiDocument != null)
-            uiDocument.enabled = false;
+        //if (uiDocument != null)
+        //uiDocument.enabled = false;
     }
 
     private void OnEnable()
     {
-        // Отложенная инициализация
-        if (uiDocument != null && uiDocument.rootVisualElement != null)
-        {
-            var closeBtn = uiDocument.rootVisualElement.Q<Button>("CloseButton");
-            if (closeBtn != null)
-                closeBtn.RegisterCallback<ClickEvent>(_ => Hide());
-        }
+        // РћС‚Р»РѕР¶РµРЅРЅР°СЏ РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ
+        //if (uiDocument != null && uiDocument.rootVisualElement != null)
+        //{
+        //    var reseteBtn = uiDocument.rootVisualElement.Q<Button>("ResetButton");
+        //    if (reseteBtn != null)
+        //        reseteBtn.clicked += () => OnReset?.Invoke();
+        //    //reseteBtn.RegisterCallback<ClickEvent>(_ => Hide());
+        //}
+    }
+
+    public void Initialized()
+    {
+        gameObject.SetActive(false);
     }
 
     public void Show(RaceStatistics stats = null)
     {
+        gameObject.SetActive(true);
         if (uiDocument == null) return;
 
-        // ===== РЕАЛЬНЫЕ ДАННЫЕ =====
+        if (uiDocument != null && uiDocument.rootVisualElement != null)
+        {
+            var reseteBtn = uiDocument.rootVisualElement.Q<Button>("ResetButton");
+            if (reseteBtn != null)
+            {
+                reseteBtn.clicked += () => { Debug.Log("Reset clicked"); OnReset?.Invoke(); };
+                Debug.Log("Р—РђР Р•Р“Р•РЎРўР РР РћР’РђРќ РљР›РРљ");
+            }
+        }
+
+        // ===== Р Р•РђР›Р¬РќР«Р• Р”РђРќРќР«Р• =====
         if (stats != null)
         {
             UpdateStatistics(stats);
         }
-        // ===== ТЕСТОВЫЕ ДАННЫЕ =====
+        // ===== РўР•РЎРўРћР’Р«Р• Р”РђРќРќР«Р• =====
         else
         {
             UpdateStatistics(GetTestStatistics());
         }
 
-        uiDocument.enabled = true;
+        //uiDocument.enabled = true;
         isVisible = true;
     }
 
-    // Тестовые данные для демонстрации
+    // РўРµСЃС‚РѕРІС‹Рµ РґР°РЅРЅС‹Рµ РґР»СЏ РґРµРјРѕРЅСЃС‚СЂР°С†РёРё
     private RaceStatistics GetTestStatistics()
     {
         return new RaceStatistics
@@ -62,7 +80,8 @@ public class StatisticsModalController : MonoBehaviour
     {
         if (uiDocument == null) return;
 
-        uiDocument.enabled = false;
+        //uiDocument.enabled = false;
+        gameObject.SetActive(false);
         isVisible = false;
         Debug.Log("Statistics modal hidden");
     }
@@ -81,12 +100,12 @@ public class StatisticsModalController : MonoBehaviour
 
         var root = uiDocument.rootVisualElement;
 
-        SetLabelValue(root, "TotalTimeValue", $"{stats.totalTime:F1} сек");
-        SetLabelValue(root, "DistanceValue", $"{stats.distanceCovered:F1} м");
-        SetLabelValue(root, "AvgStrokeRateValue", $"{stats.avgStrokeRate:F1} греб/мин");
-        SetLabelValue(root, "AvgStrokeLengthValue", $"{stats.avgStrokeLength:F1} м");
-        SetLabelValue(root, "AvgSpeedValue", $"{stats.avgSpeed:F1} м/с");
-        SetLabelValue(root, "MaxSpeedValue", $"{stats.maxSpeed:F1} м/с");
+        SetLabelValue(root, "TotalTimeValue", $"{stats.totalTime:F1} СЃРµРє");
+        SetLabelValue(root, "DistanceValue", $"{stats.distanceCovered:F1} Рј");
+        SetLabelValue(root, "AvgStrokeRateValue", $"{stats.avgStrokeRate:F1} РіСЂРµР±/РјРёРЅ");
+        SetLabelValue(root, "AvgStrokeLengthValue", $"{stats.avgStrokeLength:F1} Рј");
+        SetLabelValue(root, "AvgSpeedValue", $"{stats.avgSpeed:F1} Рј/СЃ");
+        SetLabelValue(root, "MaxSpeedValue", $"{stats.maxSpeed:F1} Рј/СЃ");
         SetLabelValue(root, "TotalStrokesValue", $"{stats.totalStrokes}");
     }
 

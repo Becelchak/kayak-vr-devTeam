@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/UI%20Toolkit/UnityThemes/TrainingHUD.uss?fileID=7433441132597879392&amp;guid=4d2359946529a9b43a3cbc9a83cdbe5a&amp;type=3#TrainingHUD"/>
-    <ui:VisualElement class="hud-root">
+    <ui:VisualElement picking-mode="Ignore" class="hud-root">
         <ui:VisualElement class="left-panel">
             <ui:VisualElement class="control-panel" style="flex-direction: column;">
                 <ui:Label text="Скорость течения" class="control-title"/>
@@ -17,10 +17,10 @@
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement class="center-panel">
-            <ui:VisualElement class="top-metrics">
+        <ui:VisualElement picking-mode="Ignore" class="center-panel">
+            <ui:VisualElement name="VisualElement" picking-mode="Ignore" class="top-metrics">
                 <ui:VisualElement class="metric-card pace-card">
-                    <ui:Label text="Темп (500м)" class="metric-title"/>
+                    <ui:Label text="Темп (гребков в мин)" class="metric-title"/>
                     <ui:VisualElement class="metric-row">
                         <ui:Label name="TempoValue" text="4.1с" class="metric-value"/>
                         <ui:VisualElement class="value-group">
@@ -38,7 +38,7 @@
                     </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>
-            <ui:VisualElement class="bottom-metrics">
+            <ui:VisualElement picking-mode="Ignore" class="bottom-metrics">
                 <ui:VisualElement class="speed-panel">
                     <ui:VisualElement class="speed-row">
                         <ui:Label text="Скорость" class="speed-title"/>

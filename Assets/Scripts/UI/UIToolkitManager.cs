@@ -73,7 +73,7 @@ public class UIToolkitManager : MonoBehaviour
         if (metricsCalculator != null)
             metricsCalculator.OnMetricsUpdated += UpdateDashboard;
 
-        var raceService = ServiceLocator.Instance.GetService<IRaceService>();
+        var raceService = (RaceService) ServiceLocator.Instance.GetService<IRaceService>();
         if (raceService != null)
             raceService.OnRaceFinished += OnRaceFinished;
     }
@@ -305,40 +305,54 @@ public class UIToolkitManager : MonoBehaviour
         if (dashboardDocument == null) return;
         var root = dashboardDocument.rootVisualElement;
         var settingsBtn = root.Q<Button>("SettingsButton");
+        statisticsModal.OnReset += OnResetRaceFromModal;
 
         if (settingsBtn != null && statisticsModal != null)
         {
+            //settingsBtn.RegisterCallback<ClickEvent>(_ => {
+            //    if (statisticsModal.IsVisible)
+            //    {
+            //        statisticsModal.Hide();
+            //        Debug.Log("Statistics modal closed");
+            //    }
+            //    else
+            //    {
+            //        var raceService = (RaceService) ServiceLocator.Instance.GetService<IRaceService>();
+            //        if (raceService != null)
+            //        {
+            //            var stats = raceService.GetCurrentStatistics();
+            //            statisticsModal.Show(stats);
+            //        }
+            //        else
+            //        {
+            //            statisticsModal.Show();
+            //            Debug.Log("Empty stats");
+            //        }
+            //        Debug.Log("Statistics modal opened");
+            //    }
+            //});
             settingsBtn.RegisterCallback<ClickEvent>(_ => {
-                if (statisticsModal.IsVisible)
-                {
-                    statisticsModal.Hide();
-                    Debug.Log("Statistics modal closed");
-                }
-                else
-                {
-                    var raceService = ServiceLocator.Instance.GetService<IRaceService>();
-                    if (raceService != null)
-                    {
-                        var stats = raceService.GetCurrentStatistics();
-                        statisticsModal.Show(stats);
-                    }
-                    else
-                    {
-                        statisticsModal.Show();
-                    }
-                    Debug.Log("Statistics modal opened");
-                }
+                var raceService = (RaceService)ServiceLocator.Instance.GetService<IRaceService>();
+                var stats = raceService.GetCurrentStatistics();
+                statisticsModal.Toggle(stats);
             });
         }
+        statisticsModal.Initialized();
+    }
+
+    private void OnResetRaceFromModal()
+    {
+        var raceService = (RaceService) ServiceLocator.Instance.GetService<IRaceService>();
+        raceService?.ResetRace();
     }
 
     private void SetupGameStart()
     {
-        var raceService = ServiceLocator.Instance.GetService<IRaceService>();
-        if (raceService != null)
-        {
-            raceService.OnRaceFinished += OnRaceFinished;
-        }
+        //var raceService = ServiceLocator.Instance.GetService<IRaceService>();
+        //if (raceService != null)
+        //{
+        //    raceService.OnRaceFinished += OnRaceFinished;
+        //}
     }
 
     private void OnRaceFinished(RaceStatistics stats)
@@ -349,8 +363,8 @@ public class UIToolkitManager : MonoBehaviour
 
     private void UpdateDashboard(float strokeRate, float strokeLength, float speed)
     {
-        if (tempoValue != null) tempoValue.text = $"{strokeRate:F1}с";
-        if (strokeValue != null) strokeValue.text = $"{strokeLength:F0}";
+        if (tempoValue != null) tempoValue.text = $"{strokeRate:F1}";
+        if (strokeValue != null) strokeValue.text = $"{strokeLength:F0} м";
         if (speedValue != null) speedValue.text = $"{speed:F1}м/с";
 
         UpdateTempoMetric(strokeRate);
@@ -523,12 +537,12 @@ public class UIToolkitManager : MonoBehaviour
             routeScreenDocument.rootVisualElement.style.display = DisplayStyle.None;
 
         // Запускаем гонку
-        var raceService = ServiceLocator.Instance.GetService<IRaceService>();
-        if (raceService != null)
-        {
-            raceService.StartRace();
-            Debug.Log("Race started");
-        }
+        //var raceService = ServiceLocator.Instance.GetService<IRaceService>();
+        //if (raceService != null)
+        //{
+        //    raceService.StartRace();
+        //    Debug.Log("Race started");
+        //}
 
         // Для ПК (тренер) показываем дашборд
         if (!isAthleteMode && dashboardDocument != null)

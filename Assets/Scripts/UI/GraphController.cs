@@ -1,6 +1,7 @@
-using UnityEngine;
+п»їusing UnityEngine;
 using UnityEngine.UIElements;
 using System.Collections.Generic;
+using System.Linq;
 
 public class GraphController
 {
@@ -11,9 +12,9 @@ public class GraphController
     public System.Action OnPrevPeriod;
     public System.Action OnNextPeriod;
 
-    // Цвета графика
-    private Color barColor = Color.black;                        // голубые колонки
-    private Color lineColor = Color.yellow;                      // жёлтая линия
+    // Р¦РІРµС‚Р° РіСЂР°С„РёРєР°
+    private Color barColor = Color.black;                        // РіРѕР»СѓР±С‹Рµ РєРѕР»РѕРЅРєРё
+    private Color lineColor = Color.yellow;                      // Р¶С‘Р»С‚Р°СЏ Р»РёРЅРёСЏ
 
     public GraphController(VisualElement chartArea)
     {
@@ -29,7 +30,7 @@ public class GraphController
         Debug.Log("GraphController initialized");
     }
 
-    // ===== ТЕСТОВЫЕ ДАННЫЕ =====
+    // ===== РўР•РЎРўРћР’Р«Р• Р”РђРќРќР«Р• =====
     public void LoadTestData(string dataType = "speed")
     {
         currentDataType = dataType;
@@ -75,7 +76,7 @@ public class GraphController
 
         if (data == null || data.Count == 0)
         {
-            var emptyLabel = new Label("Нет данных для отображения");
+            var emptyLabel = new Label("РќРµС‚ РґР°РЅРЅС‹С… РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ");
             emptyLabel.style.color = Color.white;
             emptyLabel.style.unityTextAlign = TextAnchor.MiddleCenter;
             chartArea.Add(emptyLabel);
@@ -87,16 +88,16 @@ public class GraphController
         container.style.width = new Length(100, LengthUnit.Percent);
         container.style.height = new Length(100, LengthUnit.Percent);
 
-        // Заголовок
+        // Р—Р°РіРѕР»РѕРІРѕРє
         var titleLabel = new Label(GetDataTypeName());
         titleLabel.style.color = Color.black;
         titleLabel.style.fontSize = 14;
         titleLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
         titleLabel.style.marginBottom = 5;
-        titleLabel.style.unityTextAlign = TextAnchor.MiddleCenter;  // по центру
+        titleLabel.style.unityTextAlign = TextAnchor.MiddleCenter;  // РїРѕ С†РµРЅС‚СЂСѓ
         container.Add(titleLabel);
 
-        // Контейнер для графика (относительное позиционирование для линии)
+        // РљРѕРЅС‚РµР№РЅРµСЂ РґР»СЏ РіСЂР°С„РёРєР° (РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕРµ РїРѕР·РёС†РёРѕРЅРёСЂРѕРІР°РЅРёРµ РґР»СЏ Р»РёРЅРёРё)
         var graphContainer = new VisualElement();
         graphContainer.style.flexDirection = FlexDirection.Row;
         graphContainer.style.alignItems = Align.FlexEnd;
@@ -108,10 +109,10 @@ public class GraphController
         float range = maxValue - minValue;
         if (range < 0.1f) range = 1f;
 
-        // Сохраняем позиции колонок для линии
+        // РЎРѕС…СЂР°РЅСЏРµРј РїРѕР·РёС†РёРё РєРѕР»РѕРЅРѕРє РґР»СЏ Р»РёРЅРёРё
         List<Rect> columnPositions = new List<Rect>();
 
-        // Рисуем колонки
+        // Р РёСЃСѓРµРј РєРѕР»РѕРЅРєРё
         for (int i = 0; i < data.Count; i++)
         {
             var point = data[i];
@@ -127,8 +128,8 @@ public class GraphController
             column.style.borderTopLeftRadius = 4;
             column.style.borderTopRightRadius = 4;
 
-            // Тултип при наведении
-            var tooltip = new Label($"{point.time:F0}с: {point.value:F1}");
+            // РўСѓР»С‚РёРї РїСЂРё РЅР°РІРµРґРµРЅРёРё
+            var tooltip = new Label($"{point.time:F0}СЃ: {point.value:F1}");
             tooltip.style.position = Position.Absolute;
             tooltip.style.bottom = new Length(heightPercent + 5, LengthUnit.Percent);
             tooltip.style.left = 0;
@@ -144,7 +145,7 @@ public class GraphController
 
             graphContainer.Add(column);
 
-            // Сохраняем позицию для линии
+            // РЎРѕС…СЂР°РЅСЏРµРј РїРѕР·РёС†РёСЋ РґР»СЏ Р»РёРЅРёРё
             column.RegisterCallback<GeometryChangedEvent>(e =>
             {
                 var rect = column.layout;
@@ -155,7 +156,7 @@ public class GraphController
 
         container.Add(graphContainer);
 
-        // Ось Y (значения)
+        // РћСЃСЊ Y (Р·РЅР°С‡РµРЅРёСЏ)
         var axisContainer = new VisualElement();
         axisContainer.style.flexDirection = FlexDirection.Row;
         axisContainer.style.justifyContent = Justify.SpaceBetween;
@@ -166,7 +167,7 @@ public class GraphController
         axisContainer.Add(new Label($"{maxValue:F1}") { style = { color = Color.gray, fontSize = 10 } });
         container.Add(axisContainer);
 
-        // Ось X (время)
+        // РћСЃСЊ X (РІСЂРµРјСЏ)
         var timeContainer = new VisualElement();
         timeContainer.style.flexDirection = FlexDirection.Row;
         timeContainer.style.justifyContent = Justify.SpaceBetween;
@@ -174,8 +175,8 @@ public class GraphController
 
         if (data.Count > 0)
         {
-            timeContainer.Add(new Label($"{data[0].time:F0}с") { style = { color = Color.gray, fontSize = 10 } });
-            timeContainer.Add(new Label($"{data[data.Count - 1].time:F0}с") { style = { color = Color.gray, fontSize = 10 } });
+            timeContainer.Add(new Label($"{data[0].time:F0}СЃ") { style = { color = Color.gray, fontSize = 10 } });
+            timeContainer.Add(new Label($"{data[data.Count - 1].time:F0}СЃ") { style = { color = Color.gray, fontSize = 10 } });
         }
         container.Add(timeContainer);
 
@@ -185,17 +186,19 @@ public class GraphController
     private void DrawLine(VisualElement graphContainer, List<Rect> positions)
     {
         if (positions.Count < 2) return;
+        var elementsForRemove = new List<VisualElement>();
 
-        // Удаляем старые линии
-        foreach (var element in graphContainer.Children())
+        // РЈРґР°Р»СЏРµРј СЃС‚Р°СЂС‹Рµ Р»РёРЅРёРё
+        var elementsToRemove = graphContainer.Children()
+            .Where(element => element.ClassListContains("graph-line"))
+            .ToList();
+        foreach (var element in elementsForRemove)
         {
-            if (element.ClassListContains("graph-line"))
             {
                 element.RemoveFromHierarchy();
             }
         }
-
-        // Рисуем линии между колонками
+        // Р РёСЃСѓРµРј Р»РёРЅРёРё РјРµР¶РґСѓ РєРѕР»РѕРЅРєР°РјРё
         for (int i = 0; i < positions.Count - 1; i++)
         {
             float startX = positions[i].x + positions[i].width / 2;
@@ -227,10 +230,10 @@ public class GraphController
     {
         switch (currentDataType)
         {
-            case "speed": return "СКОРОСТЬ (м/с)";
-            case "tempo": return "ТЕМП (греб/мин)";
-            case "stroke": return "ДЛИНА ГРЕБКА (см)";
-            default: return "ГРАФИК";
+            case "speed": return "РЎРљРћР РћРЎРўР¬ (Рј/СЃ)";
+            case "tempo": return "РўР•РњРџ (РіСЂРµР±/РјРёРЅ)";
+            case "stroke": return "Р”Р›РРќРђ Р“Р Р•Р‘РљРђ (СЃРј)";
+            default: return "Р“Р РђР¤РРљ";
         }
     }
 

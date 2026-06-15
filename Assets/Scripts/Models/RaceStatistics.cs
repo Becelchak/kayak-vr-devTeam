@@ -17,5 +17,5 @@ public class RaceStatistics
     [Tooltip("Максимальная скорость")]
     public float maxSpeed;
     [Tooltip("Общее число гребков")]
-    public int totalStrokes;
+    public int totalStrokes = 0;
 }

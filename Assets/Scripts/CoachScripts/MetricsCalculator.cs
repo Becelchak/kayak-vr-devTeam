@@ -55,6 +55,8 @@ public class MetricsCalculator : MonoBehaviour
     public event Action OnStrokeEnded;
 
     private bool isStrokeInProgress = false;
+    private float lastMetricsUpdateTime;
+    private const float METRICS_UPDATE_INTERVAL = 0.1f;
     #endregion
 
     private void OnEnable()
@@ -78,8 +80,17 @@ public class MetricsCalculator : MonoBehaviour
             StrokeRate = Mathf.Max(0, StrokeRate - tempoDecayRate * Time.deltaTime);
         }
 
+        // Принудительное обновление метрик раз в заданный интервал
+        if (Time.time - lastMetricsUpdateTime >= METRICS_UPDATE_INTERVAL)
+        {
+            lastMetricsUpdateTime = Time.time;
+            OnMetricsUpdated?.Invoke(StrokeRate, StrokeLength, Speed);
+        }
+
         if (logToConsole)
         {
+            // Логирнование в консоль метрик
+            Debug.Log($"Темп:{StrokeRate}, Длина гребка:{StrokeLength}, Скорость:{Speed}");
         }
     }
 
@@ -130,6 +141,7 @@ public class MetricsCalculator : MonoBehaviour
     public void SetStrokeLength(float length)
     {
         StrokeLength = length;
+        OnMetricsUpdated?.Invoke(StrokeRate, StrokeLength, Speed);
     }
 
     private void AddStrokeInterval(float interval)

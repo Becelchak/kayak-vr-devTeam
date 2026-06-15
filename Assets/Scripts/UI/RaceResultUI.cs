@@ -22,13 +22,15 @@ public class RaceResultUI : MonoBehaviour
         CoachCameraController.AddUILock();
         var root = uiDocument.rootVisualElement;
 
-        timeLabel = root.Q<Label>("TotalTime");
-        distanceLabel = root.Q<Label>("Distance");
-        avgStrokeRateLabel = root.Q<Label>("AvgStrokeRate");
-        avgStrokeLengthLabel = root.Q<Label>("AvgStrokeLength");
-        avgSpeedLabel = root.Q<Label>("AvgSpeed");
-        maxSpeedLabel = root.Q<Label>("MaxSpeed");
-        totalStrokesLabel = root.Q<Label>("TotalStrokes");
+        VisualElement statsContainer = root[0];
+
+        timeLabel = root[0].Q<Label>("TotalTime");
+        distanceLabel = root[0].Q<Label>("Distance");
+        avgStrokeRateLabel = root[0].Q<Label>("AvgStrokeRate");
+        avgStrokeLengthLabel = root[0].Q<Label>("AvgStrokeLength");
+        avgSpeedLabel = root[0].Q<Label>("AvgSpeed");
+        maxSpeedLabel = root[0].Q<Label>("MaxSpeed");
+        totalStrokesLabel = root[0].Q<Label>("TotalStrokes");
         resetButton = root.Q<Button>("ResetButton");
 
         timeLabel.text = $"Время: {stats.totalTime:F1} с";

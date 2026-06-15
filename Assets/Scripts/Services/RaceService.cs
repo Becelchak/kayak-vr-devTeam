@@ -13,9 +13,9 @@ public class RaceService : BaseService, IRaceService
     [Tooltip("Точка финиша (коллайдер-триггер)")]
     [SerializeField] private Transform finishPoint;
 
-    [Header("UI References")]
-    [Tooltip("Префаб окна статистики (UIDocument)")]
-    [SerializeField] private GameObject raceResultUIPrefab;
+    //[Header("UI References")]
+    //[Tooltip("Префаб окна статистики (UIDocument)")]
+    //[SerializeField] private GameObject raceResultUIPrefab;
 
     [Header("MiniMap Line")]
     [Tooltip("LineRenderer для отображения маршрута на миникарте")]
@@ -34,7 +34,7 @@ public class RaceService : BaseService, IRaceService
     private List<float> strokeLengths = new List<float>();
     private List<float> speeds = new List<float>();
 
-    private GameObject currentResultWindow;
+    //private GameObject currentResultWindow;
     private Rigidbody kayakRigidbody;
 
     private List<RaceStatistics> completedRaces = new List<RaceStatistics>();
@@ -79,7 +79,7 @@ public class RaceService : BaseService, IRaceService
             metrics.OnStrokeEnded += OnStrokeEnded;
         }
 
-        Debug.Log("Race started!");
+        //Debug.Log("Race started!");
     }
 
     private void OnMetricsUpdated(float strokeRate, float strokeLength, float speed)
@@ -125,30 +125,32 @@ public class RaceService : BaseService, IRaceService
         completedRaces.Add(currentStats);
 
         OnRaceFinished?.Invoke(currentStats);
-        ShowRaceResults();
+        //ShowRaceResults();
     }
 
-    private void ShowRaceResults()
-    {
-        if (raceResultUIPrefab != null && currentResultWindow == null)
-        {
-            currentResultWindow = Instantiate(raceResultUIPrefab);
-            var ui = currentResultWindow.GetComponent<RaceResultUI>();
-            if (ui != null)
-            {
-                ui.SetStatistics(currentStats);
-                ui.OnReset += ResetRace;
-            }
-        }
-    }
+    //private void ShowRaceResults()
+    //{
+    //    if (raceResultUIPrefab != null && currentResultWindow == null)
+    //    {
+    //        currentResultWindow = Instantiate(raceResultUIPrefab);
+    //        var modal = currentResultWindow.GetComponent<StatisticsModalController>();
+    //        if (modal != null)
+    //        {
+    //            //modal.SetStatistics(currentStats);
+    //            Debug.Log("ВПЕРЕД");
+    //            modal.Show(currentStats);
+    //            modal.OnReset += ResetRace;
+    //        }
+    //    }
+    //}
 
     public void ResetRace()
     {
-        if (currentResultWindow != null)
-        {
-            Destroy(currentResultWindow);
-            currentResultWindow = null;
-        }
+        //if (currentResultWindow != null)
+        //{
+        //    Destroy(currentResultWindow);
+        //    currentResultWindow = null;
+        //}
 
         TeleportPlayerToStart();
 
