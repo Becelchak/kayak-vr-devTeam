@@ -2,6 +2,7 @@
 using UnityEngine.UIElements;
 using System.Collections.Generic;
 using Cursor = UnityEngine.Cursor;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 
 public class UIToolkitManager : MonoBehaviour
 {
@@ -57,8 +58,8 @@ public class UIToolkitManager : MonoBehaviour
 
     private void Start()
     {
-        isAthleteMode = false;//Display.displays.Length <= 1;
-        Debug.Log($"Mode: {(isAthleteMode ? "ATHLETE (VR)" : "COACH (PC)")}");
+        isAthleteMode = false;
+        //Debug.Log($"Mode: {(isAthleteMode ? "ATHLETE (VR)" : "COACH (PC)")}");
 
         SetupDashboard();
         SetupRatingTable();
@@ -104,9 +105,9 @@ public class UIToolkitManager : MonoBehaviour
         strokeArrow = root.Q<Label>("StrokeArrow");
         speedArrow = root.Q<Label>("SpeedArrow");
 
-        Debug.Log($"TempoValue found: {tempoValue != null}");
-        Debug.Log($"StrokeValue found: {strokeValue != null}");
-        Debug.Log($"SpeedValue found: {speedValue != null}");
+        //Debug.Log($"TempoValue found: {tempoValue != null}");
+        //Debug.Log($"StrokeValue found: {strokeValue != null}");
+        //Debug.Log($"SpeedValue found: {speedValue != null}");
 
         if (tempoValue != null) tempoValue.text = "0.0с";
         if (strokeValue != null) strokeValue.text = "0";
@@ -344,6 +345,7 @@ public class UIToolkitManager : MonoBehaviour
     {
         var raceService = (RaceService) ServiceLocator.Instance.GetService<IRaceService>();
         raceService?.ResetRace();
+        statisticsModal.Toggle();
     }
 
     private void SetupGameStart()

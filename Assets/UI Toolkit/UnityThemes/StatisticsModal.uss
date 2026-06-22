@@ -4,15 +4,14 @@
     height: 100%;
     justify-content: center;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.75); /* 35% затемнения */
-    backdrop-filter: blur(4px)
-    position: absolute;
+    background-color: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px) position absolute;
     left: 0;
     top: 0;
 }
 
 .modal-window {
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgb(255, 255, 255);
     border-radius: 25px;
     width: 650px;
     height: 595px;
@@ -48,14 +47,13 @@
 .stat-label {
     font-size: 25px;
     color: rgb(0, 0, 0);
-    -unity-font-style: light;
+    -unity-font-definition: url("project://database/Assets/TextMesh%20Pro/Fonts/LiberationSans.ttf?fileID=12800000&guid=e3265ab4bf004d28a9537516768c1c75&type=3#LiberationSans");
 }
 
 .stat-value {
     font-size: 25px;
     color: rgb(0, 0, 0);
     -unity-text-align: middle-right;
-    -unity-font-style: light;
 }
 
 .button-container {
@@ -65,8 +63,6 @@
 }
 
 .close-button {
-    background-color: rgb(76, 175, 80);
-    color: white;
     font-size: 16px;
     padding: 8px 20px;
     border-radius: 8px;
@@ -74,5 +70,4 @@
 }
 
 .close-button:hover {
-    background-color: rgb(69, 160, 73);
 }

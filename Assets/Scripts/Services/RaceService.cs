@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Collections;
 
 /// <summary>
 /// Управление трассой: старт/финиш, сбор статистики, отображение линии маршрута.
@@ -28,6 +29,7 @@ public class RaceService : BaseService, IRaceService
 
     private RaceStatistics currentStats;
     private bool isRaceActive = false;
+    public bool IsRaceActive => isRaceActive;
     private float raceStartTime;
     private float currentStrokeCount = 0f;
     private List<float> strokeRates = new List<float>();
@@ -36,13 +38,14 @@ public class RaceService : BaseService, IRaceService
 
     //private GameObject currentResultWindow;
     private Rigidbody kayakRigidbody;
+    [Tooltip("Родительский объект для каяка и всех его компонентов")]
+    [SerializeField]private GameObject kayakParentObject;
 
     private List<RaceStatistics> completedRaces = new List<RaceStatistics>();
 
     private void Start()
     {
-        var kayak = GameObject.FindGameObjectWithTag("Player");
-        if (kayak != null) kayakRigidbody = kayak.GetComponent<Rigidbody>();
+        if (kayakParentObject != null) kayakRigidbody = kayakParentObject.GetComponent<Rigidbody>();
 
         if (raceLine == null)
         {
@@ -57,6 +60,8 @@ public class RaceService : BaseService, IRaceService
         raceLine.endWidth = 5f;
         //raceLine.material = lineMaterial;
         raceLine.enabled = true;
+
+        currentStats = new RaceStatistics();
     }
 
     public void StartRace()
@@ -88,6 +93,14 @@ public class RaceService : BaseService, IRaceService
         strokeRates.Add(strokeRate);
         strokeLengths.Add(strokeLength);
         speeds.Add(speed);
+
+        //currentStats.totalTime = Time.time - raceStartTime;
+        //currentStats.distanceCovered = Vector3.Distance(startPoint.position, finishPoint.position);
+        //currentStats.totalStrokes = Mathf.RoundToInt(currentStrokeCount);
+        //currentStats.avgStrokeRate = (strokeRates.Count > 0) ? Average(strokeRates) : 0;
+        //currentStats.avgStrokeLength = (strokeLengths.Count > 0) ? Average(strokeLengths) : 0;
+        //currentStats.avgSpeed = (speeds.Count > 0) ? Average(speeds) : 0;
+        //currentStats.maxSpeed = (speeds.Count > 0) ? Max(speeds) : 0;
     }
 
     public List<RaceStatistics> GetAllRaces()
@@ -146,13 +159,18 @@ public class RaceService : BaseService, IRaceService
 
     public void ResetRace()
     {
-        //if (currentResultWindow != null)
-        //{
-        //    Destroy(currentResultWindow);
-        //    currentResultWindow = null;
-        //}
+        // Отключение физических компонентов, дабы исключить их влияние на перемещение
+        if (kayakParentObject != null)
+        {
+            var paddle = kayakParentObject.GetComponent<DoublePaddleSystem>();
+            if (paddle != null) paddle.enabled = false;
+
+            var buoyancy = kayakParentObject.GetComponent<BuoyancySystem>();
+            if (buoyancy != null) buoyancy.enabled = false;
+        }
 
         TeleportPlayerToStart();
+        StartCoroutine(EnablePhysicsAfterFrame());
 
         isRaceActive = false;
         strokeRates.Clear();
@@ -165,15 +183,35 @@ public class RaceService : BaseService, IRaceService
 
     private void TeleportPlayerToStart()
     {
-        var kayak = GameObject.FindGameObjectWithTag("Player");
-        if (kayak != null)
+        if (kayakParentObject != null)
         {
-            kayak.transform.position = startPoint.position;
+            kayakParentObject.transform.position = startPoint.position;
             if (kayakRigidbody != null)
             {
+                kayakRigidbody.position = startPoint.position;
+                kayakRigidbody.rotation = startPoint.rotation;
                 kayakRigidbody.linearVelocity = Vector3.zero;
                 kayakRigidbody.angularVelocity = Vector3.zero;
             }
+            else
+            {
+
+                kayakParentObject.transform.position = startPoint.position;
+            }
+        }
+    }
+
+    private IEnumerator EnablePhysicsAfterFrame()
+    {
+        yield return new WaitForFixedUpdate(); // ждём один физический кадр
+
+        if (kayakParentObject != null)
+        {
+            var paddle = kayakParentObject.GetComponent<DoublePaddleSystem>();
+            if (paddle != null) paddle.enabled = true;
+
+            var buoyancy = kayakParentObject.GetComponent<BuoyancySystem>();
+            if (buoyancy != null) buoyancy.enabled = true;
         }
     }
 
@@ -193,10 +231,10 @@ public class RaceService : BaseService, IRaceService
     }
     public RaceStatistics GetCurrentStatistics()
     {
-        if (currentStats == null)
-        {
-            return new RaceStatistics(); // пустая статистика, если гонка не завершена
-        }
+        //if (currentStats == null)
+        //{
+        //    return new RaceStatistics(); // пустая статистика, если гонка не завершена
+        //}
         return currentStats;
     }
 

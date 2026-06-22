@@ -19,7 +19,7 @@ public class Data
 
 public class WebSocketClient : MonoBehaviour
 {
-    [SerializeField] private string serverUrl = "ws://raspbery-box:8765";
+    [SerializeField] private string serverUrl = "ws://raspbery-box:8765/ws";
     [SerializeField] private TMPro.TMP_Text statusText;
     [SerializeField] private BuoyancyController bouat;
     [SerializeField] private WebParserBase parser;
@@ -161,7 +161,7 @@ public class WebSocketClient : MonoBehaviour
         float elapsedTime = Time.time - _startTime;
         string line = $"{_power},{_d_power},{elapsedTime}\n";
 
-        //Debug.Log(line);
+        Debug.Log(line);
         OnPowerChanged?.Invoke(_power, _d_power);
 
         if(!_useOfflineMode) File.AppendAllText(_filePath, line);

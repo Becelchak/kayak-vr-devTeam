@@ -176,7 +176,7 @@
     width: 420px;
     height: 55px;
     flex-direction: row;
-    background: linear-gradient(135deg, rgba(225, 233, 240, 1), rgba(17, 104, 0, 1));
+    
     overflow: hidden;
     border-radius: 16px;
 }
@@ -188,24 +188,21 @@
     margin-right: 0;
     margin-top: 0;
     margin-bottom: 0;
-    /*background-color: rgba(255, 255, 255, 0);
-    transition: background-color 0.2s ease;*/
 }
 
 .weather-label {
     font-size: 14px;
     color: rgb(40, 40, 40);
-    -unity-font-style: bold;
     margin-left: 10px;
     margin-right: 10px;
 }
 
 .weather-button.sunny-button.active-sunny {
-    background-color: rgba(255, 215, 0, 0.8);
+
 }
 
 .weather-button.rainy-button.active-rainy {
-    background-color: rgba(79, 195, 247, 0.8);
+
 }
 
 .custom-slider {
@@ -233,20 +230,20 @@
     border-color: white;
 }
 
-/* Трек (полоска) */
+/* пїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅ) */
 .custom-slider .unity-base-slider__track {
     background-color: rgba(180, 180, 180, 1);
     border-radius: 8px;
     height: 6px;
 }
 
-/* Зелёная заливка (слева от ползунка) */
+/* пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ) */
 .custom-slider .unity-base-slider__track-fill {
     background-color: rgb(17, 104, 0);
     border-radius: 8px;
 }
 
-/* Круглая ручка */
+/* пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ */
 .custom-slider .unity-base-slider__dragger {
     width: 18px;
     height: 18px;
@@ -257,9 +254,9 @@
 }
 
 .right-panel.weather-sunny {
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.8), rgba(255, 165, 0, 0.8));
+
 }
 
 .right-panel.weather-rainy {
-    background: linear-gradient(135deg, rgba(79, 195, 247, 0.8), rgba(2, 136, 209, 0.8));
+
 }

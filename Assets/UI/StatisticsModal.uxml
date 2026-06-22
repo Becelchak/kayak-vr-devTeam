@@ -2,36 +2,36 @@
     <Style src="project://database/Assets/UI%20Toolkit/UnityThemes/StatisticsModal.uss?fileID=7433441132597879392&amp;guid=03da3c5286d304545b19391eb4f4765b&amp;type=3#StatisticsModal"/>
     <ui:VisualElement class="screen-overlay">
         <ui:VisualElement name="Background" class="modal-window">
-            <ui:Label text="Статистика" class="modal-title"/>
+            <ui:Label text="Статистика" name="Label" tabindex="0" style="-unity-font-definition: url(&quot;project://database/Library/unity%20default%20resources?fileID=10102&amp;guid=0000000000000000e000000000000000&amp;type=0#LegacyRuntime&quot;); font-size: 34px; -unity-text-align: upper-center; color: rgb(0, 0, 0); -unity-font-style: bold;"/>
             <ui:VisualElement name="TotalTime" class="stat-row bg-light">
-                <ui:Label text="Время" class="stat-label"/>
-                <ui:Label name="TotalTimeValue" text="0.0 сек" class="stat-value"/>
+                <ui:Label text="Время" style="font-size: 25px; -unity-font-definition: url(&quot;project://database/Assets/UI%20Toolkit/UnityThemes/UnityDefaultRuntimeTheme.tss?fileID=2230732570650464555&amp;guid=98dce76da4764404381a50b948e7acd6&amp;type=3#NotInter-Regular&quot;); color: rgb(0, 0, 0);"/>
+                <ui:Label name="TotalTimeValue" text="0.0 сек" tabindex="0" style="-unity-font-definition: url(&quot;project://database/Assets/UI%20Toolkit/UnityThemes/UnityDefaultRuntimeTheme.tss?fileID=2230732570650464555&amp;guid=98dce76da4764404381a50b948e7acd6&amp;type=3#NotInter-Regular&quot;); font-size: 25px; color: rgb(0, 0, 0);"/>
             </ui:VisualElement>
             <ui:VisualElement name="Distance" class="stat-row bg-dark">
-                <ui:Label text="Дистанция" class="stat-label"/>
-                <ui:Label name="DistanceValue" text="0.0 м" class="stat-value"/>
+                <ui:Label text="Дистанция" tabindex="0" style="-unity-font-definition: url(&quot;project://database/Library/unity%20default%20resources?fileID=10102&amp;guid=0000000000000000e000000000000000&amp;type=0#LegacyRuntime&quot;); font-size: 25px; text-overflow: ellipsis; color: rgb(0, 0, 0);"/>
+                <ui:Label name="DistanceValue" text="0.0 м" tabindex="0" style="-unity-font-definition: url(&quot;project://database/Library/unity%20default%20resources?fileID=10102&amp;guid=0000000000000000e000000000000000&amp;type=0#LegacyRuntime&quot;); font-size: 25px; color: rgb(0, 0, 0);"/>
             </ui:VisualElement>
             <ui:VisualElement name="AvgStrokeRate" class="stat-row bg-light">
-                <ui:Label text="Средний темп" class="stat-label"/>
-                <ui:Label name="AvgStrokeRateValue" text="0.0 греб/мин" class="stat-value"/>
+                <ui:Label text="Средний темп" tabindex="0" style="-unity-font-definition: url(&quot;project://database/Library/unity%20default%20resources?fileID=10102&amp;guid=0000000000000000e000000000000000&amp;type=0#LegacyRuntime&quot;); font-size: 25px; color: rgb(0, 0, 0);"/>
+                <ui:Label name="AvgStrokeRateValue" text="0.0 греб/мин" tabindex="0" style="-unity-font-definition: url(&quot;project://database/Library/unity%20default%20resources?fileID=10102&amp;guid=0000000000000000e000000000000000&amp;type=0#LegacyRuntime&quot;); font-size: 25px; color: rgb(0, 0, 0);"/>
             </ui:VisualElement>
             <ui:VisualElement name="AvgStrokeLength" class="stat-row bg-dark">
-                <ui:Label text="Средняя длина гребка" class="stat-label"/>
-                <ui:Label name="AvgStrokeLengthValue" text="0.0 м" class="stat-value"/>
+                <ui:Label text="Средняя длина гребка" tabindex="0" style="-unity-font-definition: url(&quot;project://database/Library/unity%20default%20resources?fileID=10102&amp;guid=0000000000000000e000000000000000&amp;type=0#LegacyRuntime&quot;); font-size: 25px; color: rgb(0, 0, 0);"/>
+                <ui:Label name="AvgStrokeLengthValue" text="0.0 м" tabindex="0" style="-unity-font-definition: url(&quot;project://database/Library/unity%20default%20resources?fileID=10102&amp;guid=0000000000000000e000000000000000&amp;type=0#LegacyRuntime&quot;); font-size: 25px; text-overflow: ellipsis; color: rgb(0, 0, 0);"/>
             </ui:VisualElement>
             <ui:VisualElement name="AvgSpeed" class="stat-row bg-light">
-                <ui:Label text="Средняя скорость" class="stat-label"/>
-                <ui:Label name="AvgSpeedValue" text="0.0 м/с" class="stat-value"/>
+                <ui:Label text="Средняя скорость" tabindex="0" style="-unity-font-definition: url(&quot;project://database/Library/unity%20default%20resources?fileID=10102&amp;guid=0000000000000000e000000000000000&amp;type=0#LegacyRuntime&quot;); font-size: 25px; color: rgb(0, 0, 0);"/>
+                <ui:Label name="AvgSpeedValue" text="0.0 м/с" tabindex="0" class="stat-value" style="-unity-font-definition: url(&quot;project://database/Library/unity%20default%20resources?fileID=10102&amp;guid=0000000000000000e000000000000000&amp;type=0#LegacyRuntime&quot;);"/>
             </ui:VisualElement>
             <ui:VisualElement name="MaxSpeed" class="stat-row bg-dark">
-                <ui:Label text="Максимальная скорость" class="stat-label"/>
-                <ui:Label name="MaxSpeedValue" text="0.0 м/с" class="stat-value"/>
+                <ui:Label text="Максимальная скорость" tabindex="0" style="-unity-font-definition: url(&quot;project://database/Library/unity%20default%20resources?fileID=10102&amp;guid=0000000000000000e000000000000000&amp;type=0#LegacyRuntime&quot;); font-size: 25px; color: rgb(0, 0, 0);"/>
+                <ui:Label name="MaxSpeedValue" text="0.0 м/с" tabindex="0" style="-unity-font-definition: url(&quot;project://database/Library/unity%20default%20resources?fileID=10102&amp;guid=0000000000000000e000000000000000&amp;type=0#LegacyRuntime&quot;); font-size: 25px; color: rgb(0, 0, 0);"/>
             </ui:VisualElement>
             <ui:VisualElement name="TotalStrokes" class="stat-row bg-light">
-                <ui:Label text="Всего гребков" class="stat-label"/>
-                <ui:Label name="TotalStrokesValue" text="0" class="stat-value"/>
+                <ui:Label text="Всего гребков" tabindex="0" name="Label" style="-unity-font-definition: url(&quot;project://database/Library/unity%20default%20resources?fileID=10102&amp;guid=0000000000000000e000000000000000&amp;type=0#LegacyRuntime&quot;); font-size: 25px; color: rgb(0, 0, 0);"/>
+                <ui:Label name="TotalStrokesValue" text="0" tabindex="0" style="-unity-font-definition: url(&quot;project://database/Library/unity%20default%20resources?fileID=10102&amp;guid=0000000000000000e000000000000000&amp;type=0#LegacyRuntime&quot;); font-size: 25px; color: rgb(0, 0, 0);"/>
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:Button text="Перезапуск" name="ResetButton" selectable="false" focusable="false" style="background-size: 100% 100%; top: 10px; background-color: rgb(255, 247, 247); -unity-background-scale-mode: stretch-to-fill; -unity-slice-type: sliced; scale: 1 1; width: auto; font-size: 20px; color: rgb(0, 0, 0); -unity-font-definition: resource(&quot;FlatSkin/Font/Roboto-Black&quot;);"/>
+        <ui:Button text="Перезапуск" name="ResetButton" selectable="false" focusable="false" style="background-size: 100% 100%; top: 10px; background-color: rgb(255, 247, 247); -unity-background-scale-mode: stretch-to-fill; -unity-slice-type: sliced; scale: 1 1; width: auto; font-size: 20px; color: rgb(0, 0, 0); -unity-font-definition: url(&quot;project://database/Assets/UI%20Toolkit/UnityThemes/UnityDefaultRuntimeTheme.tss?fileID=2230732570650464555&amp;guid=98dce76da4764404381a50b948e7acd6&amp;type=3#NotInter-Regular&quot;);"/>
     </ui:VisualElement>
 </ui:UXML>
